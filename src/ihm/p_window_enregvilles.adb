@@ -43,7 +43,7 @@ package body P_window_enregVilles is
 	begin
 		p_application.retrouver_villes(ens_ville);
 		clear (modele_ville);
-		delete_text(entryNomVille); delete_text(entryMelOrga);delete_text(entmel2);
+		delete_text(entryNomVille); delete_text(entryMelOrga);
 		-- alimentation du modèle avec les noms de villes
 		ville_List.iterate(ens_ville ,alimente_ville'Access);
 
