@@ -35,7 +35,7 @@ begin
 end retrouver_villes;
 
 
-procedure retrouver_villes_avec_programme (ensVP : out gibus_Data.ville_List.Vector ) is
+procedure retrouver_villes_avec_programme (ensVP : out based108_data.ville_List.Vector ) is
 ensFest : festival_List.Vector;
 c : db_commons.Criteria;
 

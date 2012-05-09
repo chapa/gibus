@@ -23,7 +23,7 @@ with base_types; use base_types;  -- types énumérés
 with Ada.Calendar;use Ada.Calendar;  -- type date
 with p_application; use p_application;  -- couche application
 
-package body P_window_consultProg is
+package body P_window_consultProgramme is
 
 -- instanciation du module p_enum pour les genres de musique
 package p_enumGenre is new p_conversion.p_enum (tgenre_enum);
@@ -37,7 +37,7 @@ rang_ville, rang_J1, rang_J2  : Gtk_Tree_Iter := Null_Iter;  -- lignes dans les 
 
 -- construit le modèle associé à la vue tree_ville avec une ville par ligne
 procedure alimente_ville( pos : ville_List.Cursor ) is
-ville : gibus_Data.tVille;
+ville : based108_data.tVille;
 begin
 	ville := ville_List.element( pos );
 	append (modele_ville, rang_ville, Null_Iter); -- rajoute une ligne vide
@@ -47,7 +47,7 @@ end alimente_ville;
 
 -- (ré)initialise la fenêtre avec la liste des villes dont le festival est programmé ou un message
 procedure init_fenetre is
-	ens_ville : gibus_Data.ville_List.Vector;
+	ens_ville : based108_data.ville_List.Vector;
 begin
     p_application.retrouver_villes_avec_programme (ens_ville ) ;
 	-- alimentation du modèle avec les noms de villes
@@ -63,9 +63,9 @@ end init_fenetre;
 procedure charge is
 XML : Glade_XML;
 begin
-	Glade.XML.Gtk_New(XML, "src/ihm/consultProgramme.glade");
+	Glade.XML.Gtk_New(XML, "src/ihm/7-consultProgramme.glade");
 
-	window := Gtk_Window(Get_Widget(XML,"windowConsultprog"));
+	window := Gtk_Window(Get_Widget(XML,"windowConsultProgramme"));
 	tree_ville :=Gtk_tree_view(Get_Widget(XML,"treeviewVille"));
 	entLieu := Gtk_entry(Get_Widget(XML,"entryLieu"));
 	entJ1 :=Gtk_entry(Get_Widget(XML,"entryDateJour1"));
@@ -112,7 +112,7 @@ end annule_affProg ;
 
 -- construit le modèle associé à la vue tree_groupes_J1 avec un nom de groupe et son genre par ligne
 procedure alimente_groupeJ1( pos :Programme_Jour_Festival_List.Cursor ) is
-	prog : gibus_Data.tProgramme_Jour_Festival;
+	prog : based108_data.tProgramme_Jour_Festival;
 	groupe : tgroupe;
 begin
 	prog := Programme_Jour_Festival_List.element( pos );
@@ -133,7 +133,7 @@ end alimente_groupeJ1;
 
 -- construit le modèle associé à la vue tree_groupes_J2 avec un nom de groupe et son genre par ligne
 procedure alimente_groupeJ2( pos : Programme_Jour_Festival_List.Cursor ) is
-	prog : gibus_Data.tProgramme_Jour_Festival;
+	prog : based108_data.tProgramme_Jour_Festival;
 	groupe : tgroupe;
 begin
 	prog := Programme_Jour_Festival_List.element( pos );
@@ -194,4 +194,4 @@ begin
 	end if;
 end affiche_prog;
 
-end P_window_consultProg;
+end P_window_consultProgramme;
