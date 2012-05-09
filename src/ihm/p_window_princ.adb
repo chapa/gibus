@@ -13,7 +13,7 @@ with p_window_consultGroupe; -- (6)
 with p_window_consultProgramme; -- (7)
 with p_window_consultFinalistes; -- (10)
 with p_window_modifierInfosGroupe;
-
+with p_application;
 package body p_window_princ is
 
 	window_princ : Gtk_Window; -- variable désignant la fenêtre
@@ -55,11 +55,11 @@ package body p_window_princ is
 		rep : Message_Dialog_Buttons;
 	begin
 		rep := Message_Dialog("Une base existe. Voulez-vous vraiment la détruire ?",confirmation, button_ok or button_no);
-		--if rep = button_ok then
-		--	p_operations.vider_tables ;
-		--else
-		--	rep:=Message_Dialog ("La base est conservée.");
-		--end if;
+		if rep = button_ok then
+			p_application.vider_tables ;
+		else
+			rep:=Message_Dialog ("La base est conservée.");
+		end if;
 		rep := Message_Dialog("Le contenu de la base est détruit");
 	end viderTables;
 

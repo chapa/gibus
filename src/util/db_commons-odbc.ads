@@ -1,5 +1,5 @@
 --
--- Created by ada_generator.py on 2012-05-09 10:14:49.399212
+-- Created by ada_generator.py on 2012-05-09 10:13:51.302324
 -- 
 with GNU.DB.SQLCLI; use GNU.DB.SQLCLI;
 with base_types; use base_types;
