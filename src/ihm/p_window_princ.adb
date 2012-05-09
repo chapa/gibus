@@ -57,10 +57,11 @@ package body p_window_princ is
 		rep := Message_Dialog("Une base existe. Voulez-vous vraiment la détruire ?",confirmation, button_ok or button_no);
 		if rep = button_ok then
 			p_application.vider_tables ;
+			rep := Message_Dialog("Le contenu de la base est détruit");
 		else
 			rep:=Message_Dialog ("La base est conservée.");
 		end if;
-		rep := Message_Dialog("Le contenu de la base est détruit");
+		
 	end viderTables;
 
 	procedure affiche_win_enregVilles(widget : access Gtk_Widget_Record'Class) is
