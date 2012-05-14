@@ -122,6 +122,7 @@ package body p_application is
 		programme_jour_festival_io.Add_Passage_To_Orderings (c2, asc);
 		ensProg2 := programme_jour_festival_io.retrieve (c2);
 	end consulter_programme_festival;
+
 	procedure consulter_festival(nomville : unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer)is
 		fest:tFestival;
 		ville : tVille;
@@ -134,5 +135,21 @@ package body p_application is
 		ville := ville_io.Retrieve_by_pk(nomVille);
 		Mel_Contact:=ville.Mel_Contact;
 	end consulter_festival;
+
+	procedure retrouver_groupes(ensG : out Groupe_List.Vector) is
+		c : db_commons.Criteria;
+	begin
+		-- fixe l'ordre du résultat par ordre alphabétique des noms de groupe
+		groupe_io.add_nom_groupe_to_orderings(c, asc);
+		ensG := groupe_io.retrieve(c);
+		if groupe_io.is_empty(ensG) then
+			raise ExAucunGroupe;
+		end if;
+	end retrouver_groupes;
+
+	procedure consulter_groupe(groupe : in out tGroupe ; nomVille : out Unbounded_String) is
+	begin
+		groupe := groupe_io.retrieve_by_pk(groupe.Nom_Groupe);
+	end consulter_groupe;
 
 end p_application;

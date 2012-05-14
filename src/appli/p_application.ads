@@ -28,7 +28,11 @@ package  p_application is
 	procedure consulter_programme_festival(nomville :  unbounded_string ; fest : out tfestival; ensProg1, ensProg2 : out Programme_Jour_Festival_List.Vector );
 
 	procedure consulter_festival(nomville : unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer);
-	ExAucuneVille, ExVilleExiste, ExGroupeNonTrouve : exception;
 
+	procedure retrouver_groupes(ensG : out Groupe_List.Vector);
+
+	procedure consulter_groupe(groupe : in out tGroupe ; nomVille : out Unbounded_String);
+
+	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve : exception;
 
 end p_application; 
