@@ -1,7 +1,7 @@
 with based108_data;use based108_data;
 with Ada.Containers.Vectors;
 with ada.strings.Unbounded; use ada.strings.Unbounded;
-
+with ada.Calendar;
 package  p_application is
 
 	-- vidage des données de la base
@@ -25,8 +25,10 @@ package  p_application is
 
 	-- renvoie les programmes des 2 journées du festival de la ville de nom donné
 	-- la ville nomVille a un festival programmé
-	procedure consulter_programme_festival(nomville : unbounded_string ; fest : out tfestival; ensProg1, ensProg2 : out Programme_Jour_Festival_List.Vector );
+	procedure consulter_programme_festival(nomville :  unbounded_string ; fest : out tfestival; ensProg1, ensProg2 : out Programme_Jour_Festival_List.Vector );
 
+	procedure consulter_festival(nomville : unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer);
 	ExAucuneVille, ExVilleExiste, ExGroupeNonTrouve : exception;
 
-end p_application;
+
+end p_application; 

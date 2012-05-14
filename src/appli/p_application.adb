@@ -122,5 +122,17 @@ package body p_application is
 		programme_jour_festival_io.Add_Passage_To_Orderings (c2, asc);
 		ensProg2 := programme_jour_festival_io.retrieve (c2);
 	end consulter_programme_festival;
+	procedure consulter_festival(nomville : unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer)is
+		fest:tFestival;
+		ville : tVille;
+
+	begin
+		fest :=festival_io.Retrieve_by_pk(nomVille);
+		date:= fest.date;
+		lieu:= fest.lieu;
+		prix_place:=fest.prix_place;
+		ville := ville_io.Retrieve_by_pk(nomVille);
+		Mel_Contact:=ville.Mel_Contact;
+	end consulter_festival;
 
 end p_application;
