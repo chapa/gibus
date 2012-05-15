@@ -101,7 +101,7 @@ package body P_window_consultProgramme is
 	begin
 		destroy (window);
 	end ferme;
-
+ 
 	procedure annule_affProg (widget : access Gtk_Widget_Record'Class)is
 	begin
 		destroy (window);

@@ -44,6 +44,7 @@ package body p_window_consultfestival is
 
 	procedure affRegion2 (widget : access Gtk_Widget_Record'Class) is
 	begin
+		
 		set_sensitive(butAnnuler, false);
 		set_sensitive(butConsulter, false);
 		set_sensitive(butFermer, true);

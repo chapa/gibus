@@ -32,7 +32,7 @@ package  p_application is
 	procedure retrouver_groupes(ensG : out Groupe_List.Vector);
 
 	procedure consulter_groupe(groupe : in out tGroupe ; nomVille : out Unbounded_String);
-
+	procedure retrouver_ville_avec_festival(ensVP : out based108_data.ville_List.Vector);
 	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve : exception;
 
 end p_application; 

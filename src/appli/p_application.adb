@@ -123,7 +123,7 @@ package body p_application is
 		ensProg2 := programme_jour_festival_io.retrieve (c2);
 	end consulter_programme_festival;
 
-	procedure consulter_festival(nomville : unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer)is
+	procedure consulter_festival(nomville : in unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer)is
 		fest:tFestival;
 		ville : tVille;
 
@@ -151,5 +151,18 @@ package body p_application is
 	begin
 		groupe := groupe_io.retrieve_by_pk(groupe.Nom_Groupe);
 	end consulter_groupe;
+	
+
+	procedure retrouver_ville_avec_festival(ensVP : out based108_data.ville_List.Vector) is--a faire : enlever les villes sans festivals
+		c : db_commons.Criteria;
+	begin
+		ville_io.add_nom_ville_to_orderings(c,asc);
+		ensVP:= ville_io.retrieve(c);
+	end retrouver_ville_avec_festival;
+
+
+
+
+
 
 end p_application;
