@@ -27,8 +27,8 @@ package body P_Window_InscrireGroupe is
 	entryNbConcertsPrevus, entryNbInscriptionsPossibles, entryNomGroupe, entryNomContact, entryCoordsContact, entryAdresseSite : Gtk_GEntry;
 	treeViewVilles, treeViewGroupes : Gtk_Tree_View;
 	radiobuttonHard, radiobuttonFusion, radiobuttonAlternatif, radiobuttonPop, radiobuttonPunk, radiobuttonRockabilly : Gtk_Toggle_Button;
-	modele_ville : Gtk_Tree_Store; -- le modèle associé aux vues
-	rang_ville : Gtk_Tree_Iter := Null_Iter; -- lignes dans les modeles
+	modele_ville, modele_groupe : Gtk_Tree_Store; -- le modèle associé aux vues
+	rang_ville, rang_groupe : Gtk_Tree_Iter := Null_Iter; -- lignes dans les modeles
 
 	-- construit le modèle associé à la vue treeViewVilles avec une ville par ligne
 	procedure alimente_ville(pos : ville_List.Cursor) is
@@ -46,11 +46,11 @@ package body P_Window_InscrireGroupe is
 		procedure errorBoxAucuneVille is
 			rep : Message_Dialog_Buttons;
 		begin
-			rep := Message_Dialog("Il n'y a pas de villes enregistrées");
+			rep := Message_Dialog("Il n'y a pas de villes enregistrées avec un festival");
 			destroy(window);
 		end errorBoxAucuneVille;
 	begin
-		p_application.retrouver_villes(ens_ville);
+		p_application.retrouver_ville_avec_festival(ens_ville);
 		clear(modele_ville);
 		-- alimentation du modèle avec les noms de villes
 		ville_List.iterate(ens_ville ,alimente_ville'Access);
@@ -91,6 +91,9 @@ package body P_Window_InscrireGroupe is
 		-- creation pour la vue treeViewVilles d'une colonne et du modele associé
 		p_util_treeview.creerColonne("nomVille", treeViewVilles, false);
 		creerModele(treeViewVilles, modele_ville);
+		-- creation pour la vue treeViewGroupes d'une colonne et du modele associé
+		p_util_treeview.creerColonne("nomGroupe", treeViewGroupes, false);
+		creerModele(treeViewGroupes, modele_groupe);
 
 		init_fenetre;
 	end charge;
@@ -102,6 +105,14 @@ package body P_Window_InscrireGroupe is
 
 	procedure affRegion1(widget : access Gtk_Widget_Record'Class) is
 	begin
+		set_text(entryNbConcertsPrevus, "");
+		set_text(entryNbInscriptionsPossibles, "");
+		set_text(entryNomGroupe, "");
+		set_text(entryNomContact, "");
+		set_text(entryCoordsContact, "");
+		set_text(entryAdresseSite, "");
+		clear(modele_groupe);
+
 		set_sensitive(butAnnuler, true);
 		set_sensitive(butChoisir, true);
 		set_sensitive(butAnnuler2, false);
@@ -122,14 +133,47 @@ package body P_Window_InscrireGroupe is
 		set_sensitive(radiobuttonRockabilly, false);
 	end affRegion1;
 
+	procedure alimente_groupe(pos : Participant_Festival_List.Cursor) is
+		groupe : tParticipant_Festival;
+	begin
+		groupe := Participant_Festival_List.element(pos);
+		append(modele_groupe, rang_groupe, Null_Iter);
+		Set(modele_groupe, rang_groupe, 0, p_conversion.to_string(groupe.Nom_Groupe_Inscrit));
+	end alimente_groupe;
+
 	procedure affRegion2(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
+		ville : tVille;
+		nbConcertsPrevus, nbGroupes : integer;
+		groupes : Participant_Festival_List.Vector;
+		procedure errorBoxAucunGroupe is
+			rep : Message_Dialog_Buttons;
+		begin
+			rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
+		end errorBoxAucunGroupe;
 	begin
 		-- récupération du modèle et de la ligne sélectionnée
 		Get_Selected(Get_Selection(treeViewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
 		if rang_ville = Null_Iter then 
 			rep := Message_Dialog("Choisissez une ville");
-		else --récupération de la valeur de la colonne 1 dans la ligne sélectionnée
+		else
+			-- récupération de la valeur de la colonne 1 dans la ligne sélectionnée
+			to_ada_type((Get_String(modele_ville, rang_ville, 0)), ville.Nom_Ville);
+			-- lance la prodédure de consulation du nombre de concerts prévus en fonction du nom de la ville
+			p_application.consulter_nbConcertsPrevus(ville.Nom_Ville, nbConcertsPrevus);
+			-- lance la prodédure de consulation des groupes en fonction du nom de la ville
+			p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
+			if nbGroupes = 0 then
+				errorBoxAucunGroupe;
+			end if;
+
+			set_text(entryNbConcertsPrevus, p_conversion.to_string(nbConcertsPrevus));
+			set_text(entryNbInscriptionsPossibles, p_conversion.to_string(nbConcertsPrevus-nbGroupes));
+			set_text(entryNbConcertsPrevus, p_conversion.to_string(nbConcertsPrevus));
+			clear(modele_groupe);
+			-- alimentation du modèle avec les noms des groupes
+			Participant_Festival_List.iterate(groupes, alimente_groupe'Access);
+
 			set_sensitive(butAnnuler, false);
 			set_sensitive(butChoisir, false);
 			set_sensitive(butAnnuler2, true);

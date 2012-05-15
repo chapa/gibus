@@ -13,6 +13,10 @@ with ada.containers;
 
 package body p_application is
 
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
 	procedure vider_tables is
 		criteria : db_commons.Criteria;
 	begin
@@ -24,6 +28,10 @@ package body p_application is
 		ville_io.delete (criteria);
 	end vider_tables;
 
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
 	procedure retrouver_villes(ensV : out ville_List.Vector ) is
 		c : db_commons.Criteria;
 	begin
@@ -33,7 +41,10 @@ package body p_application is
 		if ville_io.is_empty(ensV) then raise ExAucuneVille ;end if;
 	end retrouver_villes;
 
-
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
 	procedure retrouver_villes_avec_programme (ensVP : out based108_data.ville_List.Vector ) is
 		ensFest : festival_List.Vector;
 		c : db_commons.Criteria;
@@ -84,7 +95,10 @@ package body p_application is
 		end if;
 	end retrouver_villes_avec_programme;
 
-
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
 	procedure creer_ville (ville : tville) is
 	begin
 		ville_io.Save( ville, False );
@@ -92,7 +106,10 @@ package body p_application is
 		when GNU.DB.SQLCLI.INTEGRITY_VIOLATION => raise exvilleExiste;
 	end creer_ville;
 
-
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
 	procedure consultGroupe (nom : unbounded_string; groupe : out tgroupe) is
 	begin
 		groupe := groupe_io.retrieve_by_pk (nom);
@@ -101,6 +118,10 @@ package body p_application is
 		end if;
 	end consultGroupe;
 
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
 	procedure consulter_programme_festival(nomville : unbounded_string ; fest : out tfestival; ensProg1, ensProg2 : out Programme_Jour_Festival_List.Vector ) is
 		ensJour : Jour_Festival_List.Vector;
 		j1, j2 : tjour_festival;
@@ -123,6 +144,10 @@ package body p_application is
 		ensProg2 := programme_jour_festival_io.retrieve (c2);
 	end consulter_programme_festival;
 
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
 	procedure consulter_festival(nomville : in unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer)is
 		fest:tFestival;
 		ville : tVille;
@@ -136,6 +161,10 @@ package body p_application is
 		Mel_Contact:=ville.Mel_Contact;
 	end consulter_festival;
 
+	----
+	-- Procédure qui retourne la liste des tous les groupes existants
+	-- Utilisée dans le CU6 : consultGroupe
+	----
 	procedure retrouver_groupes(ensG : out Groupe_List.Vector) is
 		c : db_commons.Criteria;
 	begin
@@ -147,22 +176,57 @@ package body p_application is
 		end if;
 	end retrouver_groupes;
 
+	----
+	-- Procédure qui retourne le groupe et le nom de la ville du groupe à partir du nom du groupe (groupe.Nom_Groupe)
+	-- Utilisée dans le CU6 : consultGroupe
+	----
 	procedure consulter_groupe(groupe : in out tGroupe ; nomVille : out Unbounded_String) is
+		participant : Participant_Festival_List.Vector;
+		festival : Festival_List.Vector;
 	begin
 		groupe := groupe_io.retrieve_by_pk(groupe.Nom_Groupe);
+		participant := groupe_io.Retrieve_Associated_Participant_Festivals(groupe);
+		nomVille := Participant_Festival_List.element(participant, Participant_Festival_List.first_index(participant)).festival;
 	end consulter_groupe;
-	
 
-	procedure retrouver_ville_avec_festival(ensVP : out based108_data.ville_List.Vector) is--a faire : enlever les villes sans festivals
+	----
+	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
+	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	----
+	procedure retrouver_ville_avec_festival(ensVP : out based108_data.ville_List.Vector) is --a faire : enlever les villes sans festivals
 		c : db_commons.Criteria;
 	begin
 		ville_io.add_nom_ville_to_orderings(c,asc);
 		ensVP:= ville_io.retrieve(c);
 	end retrouver_ville_avec_festival;
 
+	----
+	-- Procédure qui retourne le nombre de concerts prévus pour une ville (somme des concerts prévus pour chaque journée) à partir de son nom
+	-- Utilisée dans le CU4 : inscrireGroupe
+	----
+	procedure consulter_nbConcertsPrevus(Nom_Ville : in Unbounded_String ; nbConcertsPrevus : out integer) is
+		c : db_commons.Criteria;
+		ensJour : Jour_Festival_List.Vector;
+	begin
+		jour_festival_io.Add_Festival(c, Nom_Ville);
+		ensJour := jour_festival_io.retrieve(c);
+		if not jour_festival_io.is_empty(ensJour) then
+			nbConcertsPrevus := Jour_Festival_List.element(ensJour, Jour_Festival_List.first_index(ensJour)).Nbre_Concert_Max + Jour_Festival_List.element(ensJour, Jour_Festival_List.last_index(ensJour)).Nbre_Concert_Max;
+		else
+			nbConcertsPrevus := 0;
+		end if;
+	end consulter_nbConcertsPrevus;
 
-
-
-
+	----
+	-- Procédure qui retourne les groupes participants (participants) au festival de la ville de nom nomVille, et combien il y en a (nbGroupes)
+	-- Utilisée dans le CU6 : consultGroupe
+	----
+	procedure retrouver_groupes_ville(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer) is
+		festival : tFestival;
+	begin
+		festival := festival_io.Retrieve_by_pk(nomVille);
+		participants := festival_io.Retrieve_Associated_Participant_Festivals(festival);
+		nbGroupes := integer(participant_festival_io.card(participants));
+	end ;
 
 end p_application;
