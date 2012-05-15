@@ -350,54 +350,36 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="hbox5">
+          <widget class="GtkHButtonBox" id="hbuttonbox3">
             <property name="visible">True</property>
+            <property name="layout_style">spread</property>
             <child>
-              <widget class="GtkHButtonBox" id="hbuttonbox3">
+              <widget class="GtkButton" id="buttonAnnuler2">
+                <property name="label" translatable="yes">Annuler</property>
                 <property name="visible">True</property>
-                <property name="layout_style">spread</property>
-                <child>
-                  <widget class="GtkButton" id="buttonAnnuler2">
-                    <property name="label" translatable="yes">Annuler</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_buttonAnnuler2_clicked"/>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="buttonEnregistrer2">
-                    <property name="label" translatable="yes">Enregistrer</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_buttonEnregistrer2_clicked"/>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_buttonAnnuler2_clicked"/>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkVSeparator" id="vseparator1">
+              <widget class="GtkButton" id="buttonEnregistrer2">
+                <property name="label" translatable="yes">Enregistrer</property>
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_buttonEnregistrer2_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
