@@ -190,15 +190,56 @@ package body p_application is
 	end consulter_groupe;
 
 	----
-	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
-	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	-- procédure qui retourne les ville avec festivals
+	-- Utilisée dans le CU3 (consultFestival) et CU4 (inscrireGroupe) 
 	----
-	procedure retrouver_ville_avec_festival(ensVP : out based108_data.Ville_List.Vector) is --a faire : enlever les villes sans festivals
+	procedure retrouver_ville_avec_festival(ensVF : out based108_data.ville_List.Vector) is
 		c : db_commons.Criteria;
+		ensVille : ville_List.Vector;
+		procedure verifie_festival (pos : ville_list.cursor) is
+			ville : tVille;
+		begin
+			ville := ville_List.element( pos );
+			if not festival_io.Is_Null(ville_io.Retrieve_Child_Festival(ville)) then
+				ville_list.append (ensVF, ville);
+			end if;
+		end verifie_festival;
 	begin
 		ville_io.add_nom_ville_to_orderings(c,asc);
-		ensVP:= ville_io.retrieve(c);
+		ensVille:= ville_io.retrieve(c);
+		ville_list.iterate (ensVille, verifie_festival'Access);
 	end retrouver_ville_avec_festival;
+
+	----
+	-- procédure qui retourne les ville sans festivals
+	-- Utilisée dans le CU2 (creerFestival)
+	----
+
+	procedure retrouver_ville_sans_festival(ensVF : out based108_data.ville_List.Vector) is --a faire : enlever les villes sans festivals
+		c : db_commons.Criteria;
+		ensVille : ville_List.Vector;
+		
+
+		procedure verifie_festival (pos : ville_list.cursor) is
+			
+			ville : tVille;
+			
+			
+		begin
+			ville := ville_List.element( pos );
+
+			-- teste si le festival est entièrement programmé et ajoute la ville dans ensV
+			if  festival_io.Is_Null(ville_io.Retrieve_Child_Festival(ville)) then
+				--ville.nom_ville := fest.ville_festival;
+				ville_list.append (ensVF, ville);
+			end if;
+		end verifie_festival;
+	
+	begin
+		ville_io.add_nom_ville_to_orderings(c,asc);
+		ensVille:= ville_io.retrieve(c);
+		ville_list.iterate (ensVille, verifie_festival'Access);
+	end retrouver_ville_sans_festival;
 
 	----
 	-- Procédure qui retourne le nombre de concerts prévus pour une ville (somme des concerts prévus pour chaque journée) à partir de son nom
