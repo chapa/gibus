@@ -32,7 +32,7 @@ package body p_application is
 	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
 	-- DANS QUEL CU EST-ELLE UTILISÉE ?
 	----
-	procedure retrouver_villes(ensV : out ville_List.Vector ) is
+	procedure retrouver_villes(ensV : out Ville_List.Vector ) is
 		c : db_commons.Criteria;
 	begin
 		-- fixe l'ordre du résultat par ordre alphabétique des noms de ville
@@ -45,7 +45,7 @@ package body p_application is
 	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
 	-- DANS QUEL CU EST-ELLE UTILISÉE ?
 	----
-	procedure retrouver_villes_avec_programme (ensVP : out based108_data.ville_List.Vector ) is
+	procedure retrouver_villes_avec_programme (ensVP : out based108_data.Ville_List.Vector ) is
 		ensFest : festival_List.Vector;
 		c : db_commons.Criteria;
 		-- conserve dans ensVP les villes pour lesquelles un festival est entièrement programmé
@@ -84,13 +84,13 @@ package body p_application is
 			-- teste si le festival est entièrement programmé et ajoute la ville dans ensV
 			if n1 = n2 then
 				ville.nom_ville := fest.ville_festival;
-				ville_list.append (ensVP, ville);
+				Ville_List.append (ensVP, ville);
 			end if;
 		end verifie_prog;
 	begin
 		ensFest := festival_io.retrieve (c);
 		festival_list.iterate (ensFest, verifie_prog'Access);
-		if ville_List.is_empty(ensVP) then
+		if Ville_List.is_empty(ensVP) then
 			raise ExAucuneVille;
 		end if;
 	end retrouver_villes_avec_programme;
@@ -193,7 +193,7 @@ package body p_application is
 	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
 	-- DANS QUEL CU EST-ELLE UTILISÉE ?
 	----
-	procedure retrouver_ville_avec_festival(ensVP : out based108_data.ville_List.Vector) is --a faire : enlever les villes sans festivals
+	procedure retrouver_ville_avec_festival(ensVP : out based108_data.Ville_List.Vector) is --a faire : enlever les villes sans festivals
 		c : db_commons.Criteria;
 	begin
 		ville_io.add_nom_ville_to_orderings(c,asc);
@@ -228,5 +228,59 @@ package body p_application is
 		participants := festival_io.Retrieve_Associated_Participant_Festivals(festival);
 		nbGroupes := integer(participant_festival_io.card(participants));
 	end ;
+
+	----
+	-- Procédure qui retourne les villes sans programme (mais avec festival)
+	-- Utilisée dans le CU5 : programmerFestival
+	----
+	procedure retrouver_villes_sans_programme_avec_groupes(ensVP : out based108_data.Ville_List.Vector) is
+		ensFest : festival_List.Vector;
+		c : db_commons.Criteria;
+		-- conserve dans ensVP les villes pour lesquelles un festival est entièrement programmé
+		procedure verifie_prog (pos : festival_list.cursor) is
+			c , c1, c2 ,c3 : db_commons.Criteria;
+			n1, n2 : integer;
+			fest : tfestival;
+			ensJour : Jour_Festival_List.vector;
+			j1, j2 : tjour_festival;  -- les 2 journées d'un festival
+			ensProg1, ensProg2 : Programme_Jour_Festival_List.Vector;-- programme des 2 journées
+			ensGroupesInscrits : participant_festival_list.vector;
+			ville : tville;
+		begin
+			fest := festival_List.element( pos );
+			-- recherche des journées du festival de la ville
+			ensJour := festival_io.Retrieve_Associated_Jour_Festivals(fest);
+
+			j1 := Jour_Festival_List.element(ensJour, Jour_Festival_List.first_index(ensJour));
+			-- recherche du programme de la journée 1
+			ensProg1 := jour_festival_io.Retrieve_Associated_Programme_Jour_Festivals(j1);
+
+			j2 := Jour_Festival_List.element(ensJour, Jour_Festival_List.last_index(ensJour));
+			-- recherche du programme de la journée 2
+			programme_jour_festival_io.Add_Jour_Fest(c2, j2.id_jour_festival);
+			ensProg2 := programme_jour_festival_io.retrieve (c2);
+
+			-- recherche des groupes inscrits au festival de la ville
+			ensGroupesInscrits := festival_io.Retrieve_Associated_Participant_Festivals(fest);
+
+			-- n1 : nombre de groupes programmés total sur les 2 jours
+			n1 := integer(programme_jour_festival_io.card (ensProg1)) + integer(programme_jour_festival_io.card(ensProg2));
+
+			--n2 : nombre de groupes inscrits
+			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
+
+			-- teste si le festival n'est pas entièrement programmé et ajoute la ville dans ensV (s'il y a des groupes)
+			if n1 < n2 and (n2-n1) > 0 then
+				ville.nom_ville := fest.ville_festival;
+				Ville_List.append (ensVP, ville);
+			end if;
+		end verifie_prog;
+	begin
+		ensFest := festival_io.retrieve (c);
+		festival_list.iterate (ensFest, verifie_prog'Access);
+		if Ville_List.is_empty(ensVP) then
+			raise ExAucuneVille;
+		end if;
+	end retrouver_villes_sans_programme_avec_groupes;
 
 end p_application;
