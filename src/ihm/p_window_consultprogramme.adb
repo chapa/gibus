@@ -46,16 +46,18 @@ package body P_window_consultProgramme is
 	-- (ré)initialise la fenêtre avec la liste des villes dont le festival est programmé ou un message
 	procedure init_fenetre is
 		ens_ville : based108_data.ville_List.Vector;
+		procedure errorBoxAucuneVille is
+			rep : Message_Dialog_Buttons;
+		begin
+			rep := Message_Dialog("Il n'y a pas de villes avec un festival entièrement programmé");
+			destroy(window);
+		end errorBoxAucuneVille;
 	begin
 	    p_application.retrouver_villes_avec_programme (ens_ville ) ;
 		-- alimentation du modèle avec les noms de villes
 		ville_List.iterate( ens_ville , alimente_ville'Access );
 	exception
-		when exAucuneVille => append(modele_ville, rang_ville, Null_Iter);
-			-- rajoute une ligne vide
-			-- et met dans la colonne 1 de cette ligne le message
-			Set(modele_ville, rang_ville, 0, "aucune ville n'a de festival entièrement programmé");
-			set_sensitive (butConsulter, false);
+		when exAucuneVille => errorBoxAucuneVille;
 	end init_fenetre;
 
 	procedure charge is
