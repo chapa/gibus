@@ -41,6 +41,11 @@ package body P_window_enregVilles is
 	-- (ré)initialise la fenêtre avec la liste des villes enregistrées ou un message
 	procedure init_fenetre is
 		ens_ville : based108_data.ville_List.Vector;
+		procedure errorBoxAucuneVille is
+			rep : Message_Dialog_Buttons;
+		begin
+			rep := Message_Dialog("Il n'y a pas encore de villes enregistrées");
+		end errorBoxAucuneVille;
 	begin
 		p_application.retrouver_villes(ens_ville);
 		clear (modele_ville);
@@ -49,10 +54,7 @@ package body P_window_enregVilles is
 		ville_List.iterate(ens_ville ,alimente_ville'Access);
 
 		exception
-			when exAucuneVille => append (modele_ville, rang_ville, Null_Iter);
-			-- rajoute une ligne vide
-			-- et met dans la colonne 1 de cette ligne le message
-			Set (modele_ville, rang_ville, 0, "aucune ville enregistrée");
+			when exAucuneVille => errorBoxAucuneVille;
 	end init_fenetre;
 
 	procedure charge is
