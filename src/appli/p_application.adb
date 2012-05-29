@@ -248,9 +248,10 @@ package body p_application is
 		begin
 			ville := ville_List.element( pos );
 
-			-- teste si le festival est entièrement programmé et ajoute la ville dans ensV
+			-- test si le festival est entièrement programmé et ajoute la ville dans ensV
 			if  festival_io.Is_Null(ville_io.Retrieve_Child_Festival(ville)) then
 				--ville.nom_ville := fest.ville_festival;
+
 				ville_list.append (ensVF, ville);
 			end if;
 		end verifie_festival;
@@ -289,5 +290,16 @@ package body p_application is
 		participants := festival_io.Retrieve_Associated_Participant_Festivals(festival);
 		nbGroupes := integer(participant_festival_io.card(participants));
 	end ;
+	procedure creer_festival (fest:in out tFestival;jourfest1,jourfest2:in out tJour_Festival)is
+		
+	begin
+		
+		festival_io.save(fest,False);
+		jourfest1.Id_Jour_Festival:=Jour_Festival_io.Next_Free_Id_Jour_Festival;
+		jourfest2.Id_Jour_Festival:=Jour_Festival_io.Next_Free_Id_Jour_Festival;
+		Jour_Festival_io.save(jourfest1,False);
+		Jour_Festival_io.save(jourfest2,False);
+		
+	end creer_festival;
 
 end p_application;

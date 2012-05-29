@@ -37,6 +37,7 @@ package body P_window_enregVilles is
 		Set (modele_ville, rang_ville, 0, p_conversion.to_string(ville.nom_ville));
 	end alimente_ville;
 
+	
 	-- (ré)initialise la fenêtre avec la liste des villes enregistrées ou un message
 	procedure init_fenetre is
 		ens_ville : based108_data.ville_List.Vector;
@@ -86,6 +87,7 @@ package body P_window_enregVilles is
 		ville : tville;
 		ExManqueInfos : exception;
 		rep : Message_Dialog_Buttons;
+		
 	begin
 		-- vérification des la présence des infos obligatoires
 		if empty(get_text(entryNomVille)) OR empty(get_text(entryMelOrga)) then
