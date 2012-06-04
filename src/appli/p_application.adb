@@ -283,8 +283,9 @@ package body p_application is
 		
 		festival_io.save(fest,False);
 		jourfest1.Id_Jour_Festival:=Jour_Festival_io.Next_Free_Id_Jour_Festival;
-		jourfest2.Id_Jour_Festival:=Jour_Festival_io.Next_Free_Id_Jour_Festival;
 		Jour_Festival_io.save(jourfest1,False);
+		jourfest2.Id_Jour_Festival:=Jour_Festival_io.Next_Free_Id_Jour_Festival;
+		
 		Jour_Festival_io.save(jourfest2,False);
 		
 	end creer_festival;
