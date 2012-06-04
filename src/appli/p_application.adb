@@ -210,6 +210,7 @@ package body p_application is
 		ensVille:= ville_io.retrieve(c);
 		if ville_io.is_empty(ensVille) then
 			raise ExAucuneVille;
+		end if;
 		ville_list.iterate (ensVille, verifie_festival'Access);
 	end retrouver_ville_avec_festival;
 
@@ -235,6 +236,7 @@ package body p_application is
 			if  festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) then
 				--ville.nom_ville := fest.ville_festival;
 				ville_list.append (ensVF, ville);
+
 			end if;
 		end verifie_festival;
 	
@@ -243,6 +245,7 @@ package body p_application is
 		ensVille:= ville_io.retrieve(c);
 		if ville_io.is_empty(ensVille) then
 			raise ExAucuneVille;
+		end if;
 		ville_list.iterate (ensVille, verifie_festival'Access);
 	end retrouver_ville_sans_festival;
 
