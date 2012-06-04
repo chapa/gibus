@@ -268,7 +268,6 @@
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="editable">False</property>
-                <property name="max_length">2</property>
                 <property name="invisible_char">&#x2022;</property>
               </widget>
               <packing>
