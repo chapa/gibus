@@ -108,8 +108,8 @@ package body P_window_consultGroupe is
 			set_text(entryNomGroupe, p_conversion.to_string(groupe.Nom_Groupe));
 			set_text(entryNomContact, p_conversion.to_string(groupe.Nom_Contact));
 			set_text(entryCoordsContact, p_conversion.to_string(groupe.Coord_Contact));
-			set_text(entryGenreRock, p_conversion.to_string(groupe.Adr_Site));
-			set_text(entryAdresseSite, p_enumGenre.to_string(groupe.Genre));
+			set_text(entryGenreRock, p_enumGenre.to_string(groupe.Genre));
+			set_text(entryAdresseSite, p_conversion.to_string(groupe.Adr_Site));
 			set_text(entryVille, p_conversion.to_string(ville.Nom_Ville));
 
 			set_sensitive(butAnnuler, false);
