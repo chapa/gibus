@@ -276,7 +276,8 @@ package body p_application is
 		festival := festival_io.Retrieve_by_pk(nomVille);
 		participants := festival_io.Retrieve_Associated_Participant_Festivals(festival);
 		nbGroupes := integer(participant_festival_io.card(participants));
-	end ;
+	end;
+
 	procedure creer_festival (fest:in out tFestival;jourfest1,jourfest2:in out tJour_Festival)is
 		
 	begin
@@ -343,5 +344,13 @@ package body p_application is
 			raise ExAucuneVille;
 		end if;
 	end retrouver_villes_sans_programme_avec_groupes;
+
+	procedure creer_groupe(groupe : in tGroupe ; nomVille : in Unbounded_String) is
+		participants : tParticipant_Festival;
+	begin
+		participants := (groupe.Nom_Groupe, nomVille, false);
+		groupe_io.save(groupe, false);
+		participant_festival_io.save(participants, false);
+	end creer_groupe;
 
 end p_application;

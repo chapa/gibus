@@ -146,11 +146,6 @@ package body P_Window_InscrireGroupe is
 		ville : tVille;
 		nbConcertsPrevus, nbGroupes : integer;
 		groupes : Participant_Festival_List.Vector;
-		procedure errorBoxAucunGroupe is
-			rep : Message_Dialog_Buttons;
-		begin
-			rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
-		end errorBoxAucunGroupe;
 	begin
 		-- récupération du modèle et de la ligne sélectionnée
 		Get_Selected(Get_Selection(treeViewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
@@ -158,18 +153,28 @@ package body P_Window_InscrireGroupe is
 			rep := Message_Dialog("Choisissez une ville");
 		else
 			-- récupération de la valeur de la colonne 1 dans la ligne sélectionnée
-			to_ada_type((Get_String(modele_ville, rang_ville, 0)), ville.Nom_Ville);
+			to_ada_type(Get_String(modele_ville, rang_ville, 0), ville.Nom_Ville);
 			-- lance la prodédure de consulation du nombre de concerts prévus en fonction du nom de la ville
 			p_application.consulter_nbConcertsPrevus(ville.Nom_Ville, nbConcertsPrevus);
 			-- lance la prodédure de consulation des groupes en fonction du nom de la ville
 			p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
 			if nbGroupes = 0 then
-				errorBoxAucunGroupe;
+				rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
+			end if;
+			if nbConcertsPrevus - nbGroupes <= 0 then
+				rep := Message_Dialog("Tous les groupes ont étés enregistrés, il n'y a plus de place pour le festival de cette ville");
+				affRegion1(widget);
+				return;
 			end if;
 
 			set_text(entryNbConcertsPrevus, p_conversion.to_string(nbConcertsPrevus));
 			set_text(entryNbInscriptionsPossibles, p_conversion.to_string(nbConcertsPrevus-nbGroupes));
 			set_text(entryNbConcertsPrevus, p_conversion.to_string(nbConcertsPrevus));
+			set_text(entryNomGroupe, "");
+			set_text(entryNomContact, "");
+			set_text(entryCoordsContact, "");
+			set_text(entryAdresseSite, "");
+			set_active(radiobuttonHard, true);
 			clear(modele_groupe);
 			-- alimentation du modèle avec les noms des groupes
 			Participant_Festival_List.iterate(groupes, alimente_groupe'Access);
@@ -197,9 +202,31 @@ package body P_Window_InscrireGroupe is
 
 	procedure inscrireGroupe(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
+		groupe : tGroupe;
+		ville : tVille;
 	begin
+		p_conversion.to_ada_type(Get_String(modele_ville, rang_ville, 0), ville.nom_ville);
+		p_conversion.to_ada_type(get_text(entryNomGroupe), groupe.Nom_Groupe);
+		p_conversion.to_ada_type(get_text(entryNomContact), groupe.Nom_Contact);
+		p_conversion.to_ada_type(get_text(entryCoordsContact), groupe.Coord_Contact);
+		p_conversion.to_ada_type(get_text(entryAdresseSite), groupe.Adr_Site);
+		if get_active(radiobuttonHard) then
+			groupe.Genre := hard;
+		elsif get_active(radiobuttonFusion) then
+			groupe.Genre := pop;
+		elsif get_active(radiobuttonAlternatif) then
+			groupe.Genre := fusion;
+		elsif get_active(radiobuttonPop) then
+			groupe.Genre := punk;
+		elsif get_active(radiobuttonPunk) then
+			groupe.Genre := alternatif;
+		elsif get_active(radiobuttonRockabilly) then
+			groupe.Genre := rockabilly;
+		end if;
+
+		p_application.creer_groupe(groupe, ville.nom_ville);
 		rep := Message_Dialog("Le groupe a bien été inscrit");
-		destroy(window);
+		affRegion2(widget);
 	end inscrireGroupe;
 
 end P_Window_InscrireGroupe;

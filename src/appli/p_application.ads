@@ -43,6 +43,9 @@ package  p_application is
 
 	procedure retrouver_ville_sans_festival(ensVF : out based108_data.ville_List.Vector);
 
-	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve : exception;
 	procedure creer_festival (fest:in out tFestival;jourfest1,jourfest2:in out tJour_Festival);
+
+	procedure creer_groupe(groupe : in tGroupe ; nomVille : in Unbounded_String);
+
+	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve : exception;
 end p_application; 
