@@ -351,6 +351,8 @@ package body p_application is
 		participants := (groupe.Nom_Groupe, nomVille, false);
 		groupe_io.save(groupe, false);
 		participant_festival_io.save(participants, false);
+	exception
+		when GNU.DB.SQLCLI.INTEGRITY_VIOLATION => raise ExGroupeExiste;
 	end creer_groupe;
 
 end p_application;

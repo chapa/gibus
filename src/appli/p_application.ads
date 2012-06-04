@@ -47,5 +47,5 @@ package  p_application is
 
 	procedure creer_groupe(groupe : in tGroupe ; nomVille : in Unbounded_String);
 
-	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve : exception;
+	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste : exception;
 end p_application; 

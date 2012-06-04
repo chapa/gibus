@@ -9,21 +9,21 @@ with Gtk.Tree_View; use Gtk.Tree_View;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 
 -- pour gérer le composant Tree_View
-with Gtk.Tree_Model; use Gtk.Tree_Model;-- pour l'itérateur rang dans le modèle
-with Gtk.Tree_Store; use Gtk.Tree_Store;-- le modèle associé à la vue
-with Gtk.Tree_Selection; use Gtk.Tree_Selection;  -- pour la sélection dans la vue
-with p_util_treeview; use p_util_treeview;  -- utilitaire de gestion du composant treeView
+with Gtk.Tree_Model; use Gtk.Tree_Model; -- pour l'itérateur rang dans le modèle
+with Gtk.Tree_Store; use Gtk.Tree_Store; -- le modèle associé à la vue
+with Gtk.Tree_Selection; use Gtk.Tree_Selection; -- pour la sélection dans la vue
+with p_util_treeview; use p_util_treeview; -- utilitaire de gestion du composant treeView
 
 with p_conversion; use p_conversion; --utilitaire de conversion
-with based108_data; use based108_data;  -- types Ada
-with base_types; use base_types;  -- types énumérés
-with Ada.Calendar;use Ada.Calendar;  -- type date
-with p_application; use p_application;  -- couche application
+with based108_data; use based108_data; -- types Ada
+with base_types; use base_types; -- types énumérés
+with Ada.Calendar;use Ada.Calendar; -- type date
+with p_application; use p_application; -- couche application
 
 package body P_Window_InscrireGroupe is
 
 	window : Gtk_Window;
-	butAnnuler, butChoisir, butAnnuler2, butEnregistrer : Gtk_Button;
+	butAnnuler, butChoisir, butAnnuler2, butFermer, butEnregistrer : Gtk_Button;
 	entryNbConcertsPrevus, entryNbInscriptionsPossibles, entryNomGroupe, entryNomContact, entryCoordsContact, entryAdresseSite : Gtk_GEntry;
 	treeViewVilles, treeViewGroupes : Gtk_Tree_View;
 	radiobuttonHard, radiobuttonFusion, radiobuttonAlternatif, radiobuttonPop, radiobuttonPunk, radiobuttonRockabilly : Gtk_Toggle_Button;
@@ -67,6 +67,7 @@ package body P_Window_InscrireGroupe is
 		butAnnuler := Gtk_button(Get_Widget(XML, "buttonAnnuler"));
 		butChoisir := Gtk_button(Get_Widget(XML, "buttonChoisir"));
 		butAnnuler2 := Gtk_button(Get_Widget(XML, "buttonAnnuler2"));
+		butFermer := Gtk_button(Get_Widget(XML, "buttonFermer"));
 		butEnregistrer := Gtk_button(Get_Widget(XML, "buttonEnregistrer"));
 		entryNbConcertsPrevus := Gtk_GEntry(Get_Widget(XML, "entryNbConcertsPrevus"));
 		entryNbInscriptionsPossibles := Gtk_GEntry(Get_Widget(XML, "entryNbInscriptionsPossibles"));
@@ -86,6 +87,7 @@ package body P_Window_InscrireGroupe is
 		Glade.XML.signal_connect(XML, "on_buttonAnnuler_clicked", ferme'address,null_address);
 		Glade.XML.signal_connect(XML, "on_buttonChoisir_clicked", affRegion2'address,null_address);
 		Glade.XML.signal_connect(XML, "on_buttonAnnuler2_clicked", affRegion1'address,null_address);
+		Glade.XML.signal_connect(XML, "on_buttonFermer_clicked", ferme'address,null_address);
 		Glade.XML.signal_connect(XML, "on_buttonEnregistrer_clicked", inscrireGroupe'address,null_address);
 
 		-- creation pour la vue treeViewVilles d'une colonne et du modele associé
@@ -116,6 +118,7 @@ package body P_Window_InscrireGroupe is
 		set_sensitive(butAnnuler, true);
 		set_sensitive(butChoisir, true);
 		set_sensitive(butAnnuler2, false);
+		set_sensitive(butFermer, false);
 		set_sensitive(butEnregistrer, false);
 		set_sensitive(entryNbConcertsPrevus, false);
 		set_sensitive(entryNbInscriptionsPossibles, false);
@@ -182,6 +185,7 @@ package body P_Window_InscrireGroupe is
 			set_sensitive(butAnnuler, false);
 			set_sensitive(butChoisir, false);
 			set_sensitive(butAnnuler2, true);
+			set_sensitive(butFermer, true);
 			set_sensitive(butEnregistrer, true);
 			set_sensitive(entryNbConcertsPrevus, true);
 			set_sensitive(entryNbInscriptionsPossibles, true);
@@ -204,6 +208,11 @@ package body P_Window_InscrireGroupe is
 		rep : Message_Dialog_Buttons;
 		groupe : tGroupe;
 		ville : tVille;
+		procedure errorBoxGroupeExiste is
+			rep : Message_Dialog_Buttons;
+		begin
+			rep := Message_Dialog("Ce groupe existe déjà");
+		end errorBoxGroupeExiste;
 	begin
 		p_conversion.to_ada_type(Get_String(modele_ville, rang_ville, 0), ville.nom_ville);
 		p_conversion.to_ada_type(get_text(entryNomGroupe), groupe.Nom_Groupe);
@@ -227,6 +236,8 @@ package body P_Window_InscrireGroupe is
 		p_application.creer_groupe(groupe, ville.nom_ville);
 		rep := Message_Dialog("Le groupe a bien été inscrit");
 		affRegion2(widget);
+	exception
+		when ExGroupeExiste => errorBoxGroupeExiste;
 	end inscrireGroupe;
 
 end P_Window_InscrireGroupe;
