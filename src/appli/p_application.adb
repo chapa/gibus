@@ -8,6 +8,7 @@ with ville_io;
 with GNU.DB.SQLCLI;
 with p_esiut ; use p_esiut ;
 with Ada.Exceptions ; use Ada.Exceptions ;
+with p_conversion; use p_conversion; -- utilitaire de conversion
 
 with ada.containers;
 
@@ -224,14 +225,13 @@ package body p_application is
 			
 			ville : tVille;
 			
-			
 		begin
 			ville := ville_List.element( pos );
-
+			ecrire( p_conversion.to_string(ville.nom_ville));
 			-- test si le festival est entièrement programmé et ajoute la ville dans ensV
-			if  festival_io.Is_Null(ville_io.Retrieve_Child_Festival(ville)) then
+			
+			if  festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) then
 				--ville.nom_ville := fest.ville_festival;
-
 				ville_list.append (ensVF, ville);
 			end if;
 		end verifie_festival;
