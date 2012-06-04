@@ -201,13 +201,15 @@ package body p_application is
 			ville : tVille;
 		begin
 			ville := ville_List.element( pos );
-			if not festival_io.Is_Null(ville_io.Retrieve_Child_Festival(ville)) then
+			if not festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) then
 				ville_list.append (ensVF, ville);
 			end if;
 		end verifie_festival;
 	begin
 		ville_io.add_nom_ville_to_orderings(c,asc);
 		ensVille:= ville_io.retrieve(c);
+		if ville_io.is_empty(ensVille) then
+			raise ExAucuneVille;
 		ville_list.iterate (ensVille, verifie_festival'Access);
 	end retrouver_ville_avec_festival;
 
@@ -229,7 +231,7 @@ package body p_application is
 			ville := ville_List.element( pos );
 			ecrire( p_conversion.to_string(ville.nom_ville));
 			-- test si le festival est entièrement programmé et ajoute la ville dans ensV
-			
+
 			if  festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) then
 				--ville.nom_ville := fest.ville_festival;
 				ville_list.append (ensVF, ville);
@@ -239,6 +241,8 @@ package body p_application is
 	begin
 		ville_io.add_nom_ville_to_orderings(c,asc);
 		ensVille:= ville_io.retrieve(c);
+		if ville_io.is_empty(ensVille) then
+			raise ExAucuneVille;
 		ville_list.iterate (ensVille, verifie_festival'Access);
 	end retrouver_ville_sans_festival;
 
