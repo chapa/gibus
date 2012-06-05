@@ -63,9 +63,11 @@ package body P_window_consultProgramme is
 	procedure charge is
 		XML : Glade_XML;
 	begin
+
 		Glade.XML.Gtk_New(XML, "src/ihm/7-consultProgramme.glade");
 
 		window := Gtk_Window(Get_Widget(XML,"windowConsultProgramme"));
+
 		tree_ville :=Gtk_tree_view(Get_Widget(XML,"treeviewVille"));
 		entLieu := Gtk_entry(Get_Widget(XML,"entryLieu"));
 		entJ1 :=Gtk_entry(Get_Widget(XML,"entryDateJour1"));
@@ -76,7 +78,6 @@ package body P_window_consultProgramme is
 		butFermer := Gtk_button(Get_Widget(XML,"buttonFermer"));
 		butConsulter :=Gtk_button(Get_Widget(XML,"buttonConsulter")); 
 
-		
 		Glade.XML.signal_connect(XML,"on_buttonConsulter_clicked",affiche_prog'address,null_address );
 		
 		Glade.XML.signal_connect(XML,"on_buttonFermer_clicked",ferme'address,null_address );
@@ -168,9 +169,15 @@ package body P_window_consultProgramme is
 			-- affiche dans les tree_view des 2 journées la liste des groupes dans leur ordre de passage
 			afficher_groupes(ensProg1, ensProg2);
 			-- change l'état de la fenêtre
-			set_sensitive(butFermer, true);
+			set_sensitive(tree_ville, false);
+			set_sensitive(entLieu, true);
+			set_sensitive(entJ1, true);
+			set_sensitive(tree_groupes_J1, true);
+			set_sensitive(entJ2, true);
+			set_sensitive(tree_groupes_J2, true);
 			set_sensitive(butAnnuler, false);
-			set_sensitive(butConsulter,false);
+			set_sensitive(butFermer, true);
+			set_sensitive(butConsulter, false);
 		end if;
 	end affiche_prog;
 
