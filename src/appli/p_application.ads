@@ -47,5 +47,10 @@ package  p_application is
 
 	procedure creer_groupe(groupe : in tGroupe ; nomVille : in Unbounded_String);
 
+	procedure consulter_journee_festival(festival : in out tFestival);
+
+	procedure creer_groupe_journee(nomGroupe : in String ; numJournee, numOrdre : in integer);
+
 	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste : exception;
+
 end p_application; 

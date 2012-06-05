@@ -1,3 +1,4 @@
+with p_esiut; use p_esiut;
 with Glade.XML;use Glade.XML;
 with System; use System; -- module permettant l'interaction avec la boucle événementielle principale
 with Gtk.Main; -- pour les boites de dialogue
@@ -23,9 +24,8 @@ with p_application; use p_application;  -- couche application
 package body P_Window_ProgrammerFestival is
 
 	window : Gtk_Window;
-	butAnnuler1, butValider1, butAnnuler2, butValider2 : Gtk_Button;
+	butAnnuler1, butValider1, butDownJ1, butUpJ1, butDownJ2, butUpJ2, butAnnuler2, butValider2 : Gtk_Button;
 	entryJournee1, entryJournee2 : Gtk_GEntry;
-	arrowJournee1Down, arrowJournee1Up, arrowJournee2Down, arrowJournee2Up : Gtk_Arrow;
 	treeviewVilles, treeviewListeGroupes, treeviewJournee1, treeviewJournee2 : Gtk_Tree_View;
 	modele_ville, modele_liste_groupe, modele_journee1, modele_journee2 : Gtk_Tree_Store; -- le modèle associé aux vues
 	rang_ville, rang_liste_groupe, rang_journee1, rang_journee2 : Gtk_Tree_Iter := Null_Iter; -- lignes dans les modeles
@@ -70,10 +70,10 @@ package body P_Window_ProgrammerFestival is
 		butValider2 := Gtk_button(Get_Widget(XML, "buttonValider2"));
 		entryJournee1 := Gtk_GEntry(Get_Widget(XML, "entryJournee1"));
 		entryJournee2 := Gtk_GEntry(Get_Widget(XML, "entryJournee2"));
-		arrowJournee1Down := Gtk_Arrow(Get_Widget(XML, "arrowJournee1Down"));
-		arrowJournee1Up := Gtk_Arrow(Get_Widget(XML, "arrowJournee1Up"));
-		arrowJournee2Down := Gtk_Arrow(Get_Widget(XML, "arrowJournee2Down"));
-		arrowJournee2Up := Gtk_Arrow(Get_Widget(XML, "arrowJournee2Up"));
+		butDownJ1 := Gtk_Button(Get_Widget(XML, "buttonDownJ1"));
+		butUpJ1 := Gtk_Button(Get_Widget(XML, "buttonUpJ1"));
+		butDownJ2 := Gtk_Button(Get_Widget(XML, "buttonDownJ2"));
+		butUpJ2 := Gtk_Button(Get_Widget(XML, "buttonUpJ2"));
 		treeviewVilles := Gtk_Tree_View(Get_Widget(XML, "treeviewVilles"));
 		treeviewListeGroupes := Gtk_Tree_View(Get_Widget(XML, "treeviewListeGroupes"));
 		treeviewJournee1 := Gtk_Tree_View(Get_Widget(XML, "treeviewJournee1"));
@@ -81,6 +81,10 @@ package body P_Window_ProgrammerFestival is
 
 		Glade.XML.signal_connect(XML, "on_buttonAnnuler1_clicked", ferme'address,null_address);
 		Glade.XML.signal_connect(XML, "on_buttonValider1_clicked", affRegion2'address,null_address);
+		Glade.XML.signal_connect(XML, "on_buttonDownJ1_clicked", ajouterGroupeJ1'address,null_address);
+		Glade.XML.signal_connect(XML, "on_buttonUpJ1_clicked", retirerGroupeJ1'address,null_address);
+		Glade.XML.signal_connect(XML, "on_buttonDownJ2_clicked", ajouterGroupeJ2'address,null_address);
+		Glade.XML.signal_connect(XML, "on_buttonUpJ2_clicked", retirerGroupeJ2'address,null_address);
 		Glade.XML.signal_connect(XML, "on_buttonAnnuler2_clicked", affRegion1'address,null_address);
 		Glade.XML.signal_connect(XML, "on_buttonValider2_clicked", enregistrerFestival'address,null_address);
 
@@ -108,16 +112,21 @@ package body P_Window_ProgrammerFestival is
 
 	procedure affRegion1(widget : access Gtk_Widget_Record'Class) is
 	begin
+		clear(modele_liste_groupe);
+		clear(modele_journee1);
+		clear(modele_journee2);
+		set_text(entryJournee1, "");
+		set_text(entryJournee2, "");
 		set_sensitive(butAnnuler1, true);
 		set_sensitive(butValider1, true);
 		set_sensitive(butAnnuler2, false);
 		set_sensitive(butValider2, false);
 		set_sensitive(entryJournee1, false);
 		set_sensitive(entryJournee2, false);
-		set_sensitive(arrowJournee1Down, false);
-		set_sensitive(arrowJournee1Up, false);
-		set_sensitive(arrowJournee2Down, false);
-		set_sensitive(arrowJournee2Up, false);
+		set_sensitive(butDownJ1, false);
+		set_sensitive(butUpJ1, false);
+		set_sensitive(butDownJ2, false);
+		set_sensitive(butUpJ2, false);
 		set_sensitive(treeviewVilles, true);
 		set_sensitive(treeviewListeGroupes, false);
 		set_sensitive(treeviewJournee1, false);
@@ -137,11 +146,7 @@ package body P_Window_ProgrammerFestival is
 		ville : tVille;
 		groupes : Participant_Festival_List.Vector;
 		nbGroupes : integer;
-		procedure errorBoxAucunGroupe is
-			rep : Message_Dialog_Buttons;
-		begin
-			rep := Message_Dialog("Il n'y a pas de groupes encore inscrits pour ce festival (normalement impossible)");
-		end errorBoxAucunGroupe;
+		festival : tFestival;
 	begin
 		-- récupération du modèle et de la ligne sélectionnée
 		Get_Selected(Get_Selection(treeViewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
@@ -153,12 +158,17 @@ package body P_Window_ProgrammerFestival is
 			-- lance la prodédure de consulation des groupes en fonction du nom de la ville
 			p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
 			if nbGroupes = 0 then
-				errorBoxAucunGroupe;
+				rep := Message_Dialog("Il n'y a pas de groupes encore inscrits pour ce festival (normalement impossible)");
 			end if;
 
 			clear(modele_liste_groupe);
 			-- alimentation du modèle avec les noms des groupes
 			Participant_Festival_List.iterate(groupes, alimente_groupe'Access);
+
+			festival.Ville_Festival := ville.Nom_Ville;
+			p_application.consulter_journee_festival(festival);
+			set_text(entryJournee1, p_conversion.to_string(festival.date));
+			set_text(entryJournee2, p_conversion.to_string(festival.date + 86400.0));
 
 			set_sensitive(butAnnuler1, false);
 			set_sensitive(butValider1, false);
@@ -166,10 +176,10 @@ package body P_Window_ProgrammerFestival is
 			set_sensitive(butValider2, true);
 			set_sensitive(entryJournee1, true);
 			set_sensitive(entryJournee2, true);
-			set_sensitive(arrowJournee1Down, true);
-			set_sensitive(arrowJournee1Up, true);
-			set_sensitive(arrowJournee2Down, true);
-			set_sensitive(arrowJournee2Up, true);
+			set_sensitive(butDownJ1, true);
+			set_sensitive(butUpJ1, true);
+			set_sensitive(butDownJ2, true);
+			set_sensitive(butUpJ2, true);
 			set_sensitive(treeviewVilles, false);
 			set_sensitive(treeviewListeGroupes, true);
 			set_sensitive(treeviewJournee1, true);
@@ -177,9 +187,84 @@ package body P_Window_ProgrammerFestival is
 		end if;
 	end affRegion2;
 
+	procedure ajouterGroupeJ1 is
+		rep : Message_Dialog_Buttons;
+		groupe : tGroupe;
+	begin
+		Get_Selected(Get_Selection(treeviewListeGroupes), Gtk_Tree_Model(modele_liste_groupe), rang_liste_groupe);
+		if rang_liste_groupe = Null_Iter then 
+			rep := Message_Dialog("Choisissez un groupe");
+		else
+			to_ada_type((Get_String(modele_liste_groupe, rang_liste_groupe, 0)), groupe.Nom_Groupe);
+			append(modele_journee1, rang_journee1, Null_Iter);
+			Set(modele_journee1, rang_journee1, 0, p_conversion.to_string(groupe.Nom_Groupe));
+			remove(modele_liste_groupe, rang_liste_groupe);
+		end if;
+	end ajouterGroupeJ1;
+
+	procedure retirerGroupeJ1 is
+		rep : Message_Dialog_Buttons;
+		groupe : tGroupe;
+	begin
+		Get_Selected(Get_Selection(treeviewJournee1), Gtk_Tree_Model(modele_journee1), rang_journee1);
+		if rang_journee1 = Null_Iter then 
+			rep := Message_Dialog("Choisissez un groupe");
+		else
+			to_ada_type((Get_String(modele_journee1, rang_journee1, 0)), groupe.Nom_Groupe);
+			append(modele_liste_groupe, rang_liste_groupe, Null_Iter);
+			Set(modele_liste_groupe, rang_liste_groupe, 0, p_conversion.to_string(groupe.Nom_Groupe));
+			remove(modele_journee1, rang_journee1);
+		end if;
+	end retirerGroupeJ1;
+
+	procedure ajouterGroupeJ2 is
+		rep : Message_Dialog_Buttons;
+		groupe : tGroupe;
+	begin
+		Get_Selected(Get_Selection(treeviewListeGroupes), Gtk_Tree_Model(modele_liste_groupe), rang_liste_groupe);
+		if rang_liste_groupe = Null_Iter then 
+			rep := Message_Dialog("Choisissez un groupe");
+		else
+			to_ada_type((Get_String(modele_liste_groupe, rang_liste_groupe, 0)), groupe.Nom_Groupe);
+			append(modele_journee2, rang_journee2, Null_Iter);
+			Set(modele_journee2, rang_journee2, 0, p_conversion.to_string(groupe.Nom_Groupe));
+			remove(modele_liste_groupe, rang_liste_groupe);
+		end if;
+	end ajouterGroupeJ2;
+
+	procedure retirerGroupeJ2 is
+		rep : Message_Dialog_Buttons;
+		groupe : tGroupe;
+	begin
+		Get_Selected(Get_Selection(treeviewJournee2), Gtk_Tree_Model(modele_journee2), rang_journee2);
+		if rang_journee2 = Null_Iter then 
+			rep := Message_Dialog("Choisissez un groupe");
+		else
+			to_ada_type((Get_String(modele_journee2, rang_journee2, 0)), groupe.Nom_Groupe);
+			append(modele_liste_groupe, rang_liste_groupe, Null_Iter);
+			Set(modele_liste_groupe, rang_liste_groupe, 0, p_conversion.to_string(groupe.Nom_Groupe));
+			remove(modele_journee2, rang_journee2);
+		end if;
+	end retirerGroupeJ2;
+
 	procedure enregistrerFestival(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
+		i : integer := 1;
 	begin
+		rang_journee1 := Get_Iter_First(modele_journee1);
+		while rang_journee1 /= Null_Iter loop
+			p_application.creer_groupe_journee(Get_String(modele_journee1, rang_journee1, 0), 1, i);
+			Next(modele_journee1, rang_journee1);
+			i := i + 1;
+		end loop;
+		i := 1;
+		rang_journee2 := Get_Iter_First(modele_journee2);
+		while rang_journee2 /= Null_Iter loop
+			p_application.creer_groupe_journee(Get_String(modele_journee2, rang_journee2, 0), 2, i);
+			Next(modele_journee2, rang_journee2);
+			i := i + 1;
+		end loop;
+
 		rep := Message_Dialog("Le festival a bien été enregistré");
 		destroy(window);
 	end enregistrerFestival;

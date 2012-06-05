@@ -140,10 +140,18 @@
                 <property name="spacing">5</property>
                 <property name="layout_style">center</property>
                 <child>
-                  <widget class="GtkArrow" id="arrowJournee1Down">
+                  <widget class="GtkButton" id="buttonDownJ1">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
-                    <property name="arrow_type">down</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_buttonDownJ1_clicked"/>
+                    <child>
+                      <widget class="GtkArrow" id="arrow1">
+                        <property name="visible">True</property>
+                        <property name="arrow_type">down</property>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -152,10 +160,18 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkArrow" id="arrowJournee1Up">
+                  <widget class="GtkButton" id="buttonUpJ1">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
-                    <property name="arrow_type">up</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_buttonUpJ1_clicked"/>
+                    <child>
+                      <widget class="GtkArrow" id="arrow2">
+                        <property name="visible">True</property>
+                        <property name="arrow_type">up</property>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -174,10 +190,18 @@
                 <property name="spacing">5</property>
                 <property name="layout_style">center</property>
                 <child>
-                  <widget class="GtkArrow" id="arrowJournee2Down">
+                  <widget class="GtkButton" id="buttonDownJ2">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
-                    <property name="arrow_type">down</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_buttonDownJ2_clicked"/>
+                    <child>
+                      <widget class="GtkArrow" id="arrow3">
+                        <property name="visible">True</property>
+                        <property name="arrow_type">down</property>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -186,10 +210,18 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkArrow" id="arrowJournee2Up">
+                  <widget class="GtkButton" id="buttonUpJ2">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
-                    <property name="arrow_type">up</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_buttonUpJ2_clicked"/>
+                    <child>
+                      <widget class="GtkArrow" id="arrow4">
+                        <property name="visible">True</property>
+                        <property name="arrow_type">up</property>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
