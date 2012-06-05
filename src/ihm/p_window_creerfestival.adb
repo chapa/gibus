@@ -127,7 +127,7 @@ package body P_window_creerfestival is
 		jourfest2.Festival:=fest.Ville_Festival;
 		
 		creer_festival(fest,jourfest1,jourfest2);
-		rep:=Message_Dialog ("Le festival est enregistrée");
+		rep:=Message_Dialog ("Le festival est enregistré");
 
 		destroy (window);
 		exception

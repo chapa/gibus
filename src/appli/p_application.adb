@@ -208,10 +208,11 @@ package body p_application is
 	begin
 		ville_io.add_nom_ville_to_orderings(c,asc);
 		ensVille:= ville_io.retrieve(c);
-		if ville_io.is_empty(ensVille) then
+		
+		ville_list.iterate (ensVille, verifie_festival'Access);
+		if ville_io.is_empty(ensVF) then
 			raise ExAucuneVille;
 		end if;
-		ville_list.iterate (ensVille, verifie_festival'Access);
 	end retrouver_ville_avec_festival;
 
 	----
@@ -243,10 +244,11 @@ package body p_application is
 	begin
 		ville_io.add_nom_ville_to_orderings(c,asc);
 		ensVille:= ville_io.retrieve(c);
-		if ville_io.is_empty(ensVille) then
+		
+		ville_list.iterate (ensVille, verifie_festival'Access);
+		if ville_io.is_empty(ensVF) then
 			raise ExAucuneVille;
 		end if;
-		ville_list.iterate (ensVille, verifie_festival'Access);
 	end retrouver_ville_sans_festival;
 
 	----
