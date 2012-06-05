@@ -39,15 +39,18 @@ package body p_window_consultfestival is
 
 	procedure init is
 		ens_ville :based108_data.ville_List.Vector;
+		rep : Message_Dialog_Buttons;
 	begin
 		retrouver_ville_avec_festival(ens_ville );
 		clear (modele_ville);
 		ville_List.iterate(ens_ville ,alimente_ville'Access);
+		
 		exception
 			when exAucuneVille => append (modele_ville, rang_ville, Null_Iter);
 			-- rajoute une ligne vide
 			-- et met dans la colonne 1 de cette ligne le message
-			Set (modele_ville, rang_ville, 0, "aucune ville enregistrée");
+		
+			rep:=Message_Dialog ("Aucune ville enregistrée");destroy(window);
 	end init;
 
 	procedure charge is
@@ -82,9 +85,20 @@ package body p_window_consultfestival is
 	end ferme_win_affGroupe ;
 
 	procedure affRegion2 (widget : access Gtk_Widget_Record'Class) is
-		ensVP :based108_data.ville_List.Vector;
+		fest:tFestival;
+		rep : Message_Dialog_Buttons;
+		ExManqueInfos : exception;
+		ville:tVille;
 	begin
-		retrouver_ville_avec_festival(ensVP );
+
+		Get_Selected(Get_Selection(treeviewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
+		if rang_ville = Null_Iter   then
+			raise ExManqueInfos;
+			
+		end if;
+		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),fest.Ville_Festival) ;
+
+		consulter_festival(fest.Ville_Festival,fest,ville);
 		set_sensitive(butAnnuler, false);
 		set_sensitive(butConsulter, false);
 		set_sensitive(butFermer, true);
@@ -97,8 +111,18 @@ package body p_window_consultfestival is
 		
 
 		set_sensitive(treeviewVilles, false);
-	end affRegion2;
 
+
+		set_text(entryLieu,p_conversion.to_string(fest.lieu));
+		set_text(entryDate,p_conversion.to_string(fest.date));
+		set_text(entryPrixPlace,p_conversion.to_string(fest.prix_place));
+		set_text(entryMail,p_conversion.to_string(ville.mel_contact));
+
+		exception
+			
+			when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
+	end affRegion2;
+	
 	procedure affRegion1(widget : access Gtk_Widget_Record'Class) is
 	begin
 		set_sensitive(butAnnuler, true);
