@@ -222,13 +222,13 @@ package body P_Window_InscrireGroupe is
 		if get_active(radiobuttonHard) then
 			groupe.Genre := hard;
 		elsif get_active(radiobuttonFusion) then
-			groupe.Genre := pop;
-		elsif get_active(radiobuttonAlternatif) then
 			groupe.Genre := fusion;
-		elsif get_active(radiobuttonPop) then
-			groupe.Genre := punk;
-		elsif get_active(radiobuttonPunk) then
+		elsif get_active(radiobuttonAlternatif) then
 			groupe.Genre := alternatif;
+		elsif get_active(radiobuttonPop) then
+			groupe.Genre := pop;
+		elsif get_active(radiobuttonPunk) then
+			groupe.Genre := punk;
 		elsif get_active(radiobuttonRockabilly) then
 			groupe.Genre := rockabilly;
 		end if;
