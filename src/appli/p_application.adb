@@ -146,20 +146,19 @@ package body p_application is
 	end consulter_programme_festival;
 
 	----
-	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
-	-- DANS QUEL CU EST-ELLE UTILISÉE ?
+	-- Procédure qui retourne les information d'un festival
+	--Utilise dans le CU3 consulter un festival
 	----
-	procedure consulter_festival(nomville : in unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer)is
-		fest:tFestival;
-		ville : tVille;
+	procedure consulter_festival(nomville : in unbounded_string;fest : out tfestival;ville : out tville)is
+		
+		
 
 	begin
 		fest :=festival_io.Retrieve_by_pk(nomVille);
-		date:= fest.date;
-		lieu:= fest.lieu;
-		prix_place:=fest.prix_place;
+		
 		ville := ville_io.Retrieve_by_pk(nomVille);
-		Mel_Contact:=ville.Mel_Contact;
+		
+		
 	end consulter_festival;
 
 	----
@@ -201,6 +200,7 @@ package body p_application is
 			ville : tVille;
 		begin
 			ville := ville_List.element( pos );
+			ecrire( p_conversion.to_string(ville.nom_ville));
 			if not festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) then
 				ville_list.append (ensVF, ville);
 			end if;

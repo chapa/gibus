@@ -53,7 +53,7 @@ package body P_window_creerfestival is
 			-- rajoute une ligne vide
 			-- et met dans la colonne 1 de cette ligne le message
 			
-			rep:=Message_Dialog ("aucune ville enregistrée");
+			rep:=Message_Dialog ("aucune ville enregistrée");destroy(window);
 	end init_fenetre;
 
 
@@ -208,7 +208,7 @@ package body P_window_creerfestival is
 		set_sensitive(treeviewVilles, false);
 		exception
 		-- cas d'une erreur de type dans les donnéess
-			when ExManqueInfos => rep:=Message_Dialog ("Informations manquantess");
+			when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
 			when Exconversion => return;
 	
 

@@ -27,7 +27,7 @@ package  p_application is
 	-- la ville nomVille a un festival programmé
 	procedure consulter_programme_festival(nomville :  unbounded_string ; fest : out tfestival; ensProg1, ensProg2 : out Programme_Jour_Festival_List.Vector );
 
-	procedure consulter_festival(nomville : unbounded_string;date : out Ada.Calendar.Time;Mel_Contact,lieu : out Unbounded_String ;prix_place: out integer);
+	procedure consulter_festival(nomville : in unbounded_string;fest : out tfestival;ville : out tville);
 
 	procedure retrouver_groupes(ensG : out Groupe_List.Vector);
 
