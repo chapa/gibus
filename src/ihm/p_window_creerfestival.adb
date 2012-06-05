@@ -15,7 +15,7 @@ with p_conversion; use p_conversion; -- utilitaire de conversion
 with based108_data; use based108_data; -- types Ada
 with p_application; use p_application; -- couche application
 with p_esiut; use p_esiut;
-with Ada.Calendar;
+with Ada.Calendar;Use ada.Calendar;
 package body P_window_creerfestival is
 
 	window : Gtk_Window;
@@ -173,7 +173,7 @@ package body P_window_creerfestival is
 		fest:tFestival;
 		rep: Message_Dialog_Buttons;
 		ExManqueInfos :exception;
-		date:Ada.Calendar.Time;
+		
 	begin
 		Get_Selected(Get_Selection(treeviewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
 		if rang_ville = Null_Iter   OR empty(get_text(entryLieu)) OR empty(get_text(entryDate)) OR empty(get_text(entryPrixPlace)) then
@@ -183,12 +183,11 @@ package body P_window_creerfestival is
 		
 		
 	 	p_conversion.to_ada_type(get_text(entryDate), fest.Date );
-	 	--date:= Ada.Calendar.Time_Of( 0, 0, 1, 9.0 );
-		set_text(entryJournee1,get_text(entryDate));
-		--set_text(entryJournee2,get_text(p_conversion.to_string(fest.date+Date) ));
+	 	
+		set_text(entryJournee1,p_conversion.to_string(fest.Date));
+		set_text(entryJournee2,p_conversion.to_string(fest.Date + 86400.0));
 		
 		
-
 		set_sensitive(butAnnuler1, false);
 		set_sensitive(butEnregistrer1, false);
 		set_sensitive(butAnnuler2, true);
