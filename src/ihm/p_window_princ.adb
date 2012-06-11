@@ -13,6 +13,8 @@ with p_window_consultGroupe; -- (6)
 with p_window_consultProgramme; -- (7)
 with p_window_consultFinalistes; -- (10)
 with p_window_modifierInfosGroupe;
+with p_window_bilanFestival;
+with p_window_enregistrerGagnant;
 with p_application;
 package body p_window_princ is
 
@@ -38,10 +40,12 @@ package body p_window_princ is
 		Glade.XML.signal_connect(XML, "on_menuitem_consultFestival_activate", affiche_win_consultFestival'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultProgramme_activate", affiche_win_consultProgramme'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultFinalistes_activate", affiche_win_consultFinalistes'address,null_address);
+		Glade.XML.signal_connect(XML, "on_menuitem_consultBilanFestival_activate", affiche_win_consultBilanFestival'address,null_address);
 
 		Glade.XML.signal_connect(XML, "on_menuitem_inscrireGroupe_activate", affiche_win_inscrireGroupe'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_modifierInfosGroupe_activate", affiche_win_modifierInfosGroupe'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultGroupe_activate", affiche_win_consultGroupe'address,null_address);
+		Glade.XML.signal_connect(XML, "on_menuitem_enregistrerGagnantFestival_activate", affiche_win_enregistrerGagnantFestival'address,null_address);
 	end charge;
 
 	procedure quitter(widget : access Gtk_Widget_Record'Class) is
@@ -117,5 +121,19 @@ package body p_window_princ is
 	begin
 		p_window_modifierInfosGroupe.charge;
 	end affiche_win_modifierInfosGroupe;
+
+
+	procedure affiche_win_consultBilanFestival(widget : access Gtk_Widget_Record'Class) is
+		-- affiche la fenêtre pour consulter les finalistes
+	begin
+		p_window_bilanFestival.charge;
+	end affiche_win_consultBilanFestival;
+
+
+	procedure affiche_win_enregistrerGagnantFestival(widget : access Gtk_Widget_Record'Class) is
+		-- affiche la fenêtre pour consulter les finalistes
+	begin
+		p_window_enregistrerGagnant.charge;
+	end affiche_win_enregistrerGagnantFestival;
 
 end p_window_princ;
