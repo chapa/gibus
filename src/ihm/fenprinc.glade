@@ -67,7 +67,7 @@
                     <child>
                       <widget class="GtkMenuItem" id="menuitem_creerFestival">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Créer un festival</property>
+                        <property name="label" translatable="yes">Cr&#xE9;er un festival</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_menuitem_creerFestival_activate"/>
                       </widget>
@@ -109,6 +109,14 @@
                         <signal name="activate" handler="on_menuitem_consultFinalistes_activate"/>
                       </widget>
                     </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_consultBilanFestival">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Bilan des festivals</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_menuitem_consultBilanFestival_activate"/>
+                      </widget>
+                    </child>
                   </widget>
                 </child>
               </widget>
@@ -138,7 +146,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem3">
                         <property name="visible">True</property>
                       </widget>
                     </child>
@@ -148,6 +156,14 @@
                         <property name="label" translatable="yes">Consulter un groupe</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_menuitem_consultGroupe_activate"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_enregistrerGagnantFestival">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Enregistrer un gagnant</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_menuitem_enregistrerGagnantFestival_activate"/>
                       </widget>
                     </child>
                   </widget>

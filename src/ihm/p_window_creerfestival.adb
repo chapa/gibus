@@ -183,7 +183,8 @@ package body P_window_creerfestival is
 		
 		
 	 	p_conversion.to_ada_type(get_text(entryDate), fest.Date );
-	 	
+	 	p_conversion.to_ada_type(get_text(entryPrixPlace), fest.prix_place );
+	 	p_conversion.to_ada_type(get_text(entryLieu), fest.lieu );
 		set_text(entryJournee1,p_conversion.to_string(fest.Date));
 		set_text(entryJournee2,p_conversion.to_string(fest.Date + 86400.0));
 		
