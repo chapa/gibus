@@ -2,15 +2,24 @@
 <glade-interface>
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy project-wide -->
-  <widget class="GtkWindow" id="window1">
+  <widget class="GtkWindow" id="WindowEnregistrerGagnantFestival">
+    <property name="width_request">400</property>
+    <property name="height_request">300</property>
+    <property name="visible">True</property>
+    <property name="title" translatable="yes">Enregistrer le gagnant</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">mouse</property>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">10</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
         <child>
           <widget class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
+            <property name="border_width">10</property>
             <property name="homogeneous">True</property>
             <child>
               <widget class="GtkLabel" id="label1">
@@ -112,8 +121,9 @@
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">automatic</property>
                 <child>
-                  <widget class="GtkTreeView" id="treeview1">
+                  <widget class="GtkTreeView" id="treeviewGroupes">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                   </widget>
                 </child>
@@ -133,12 +143,13 @@
             <property name="homogeneous">True</property>
             <property name="layout_style">spread</property>
             <child>
-              <widget class="GtkButton" id="buttonRetour1">
+              <widget class="GtkButton" id="buttonRetour">
                 <property name="label" translatable="yes">Retour</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_buttonRetour1_clicked"/>
+                <signal name="clicked" handler="on_buttonRetour_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -150,6 +161,7 @@
               <widget class="GtkButton" id="buttonEnregistrer">
                 <property name="label" translatable="yes">Enregistrer</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="on_buttonEnregistrer_clicked"/>

@@ -13,9 +13,10 @@ with p_window_consultGroupe; -- (6)
 with p_window_consultProgramme; -- (7)
 with p_window_consultFinalistes; -- (10)
 with p_window_modifierInfosGroupe;
-with p_window_bilanFestival;
-with p_window_enregistrerGagnant;
+with p_window_bilanfestival;--(8)
+with p_window_enregistrergagnant;--(9)
 with p_application;
+with p_esiut;use p_esiut;
 package body p_window_princ is
 
 	window_princ : Gtk_Window; -- variable désignant la fenêtre
@@ -126,14 +127,14 @@ package body p_window_princ is
 	procedure affiche_win_consultBilanFestival(widget : access Gtk_Widget_Record'Class) is
 		-- affiche la fenêtre pour consulter les finalistes
 	begin
-		p_window_bilanFestival.charge;
+		p_window_bilanfestival.charge;
 	end affiche_win_consultBilanFestival;
 
 
 	procedure affiche_win_enregistrerGagnantFestival(widget : access Gtk_Widget_Record'Class) is
 		-- affiche la fenêtre pour consulter les finalistes
 	begin
-		p_window_enregistrerGagnant.charge;
+		p_window_enregistrergagnant.charge;
 	end affiche_win_enregistrerGagnantFestival;
 
 end p_window_princ;
