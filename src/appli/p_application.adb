@@ -542,4 +542,9 @@ package body p_application is
 		Participant_Festival_List.iterate(ens_participant, remplir_groupe'Access);
 	end retrouver_finalistes;
 
+	procedure modifier_groupe(groupe : in tGroupe) is
+	begin
+		groupe_io.save(groupe, true);
+	end modifier_groupe;
+
 end p_application;
