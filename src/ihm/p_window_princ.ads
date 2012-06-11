@@ -23,5 +23,7 @@ package P_window_princ is
 	procedure affiche_win_consultProgramme(widget : access Gtk_Widget_Record'Class);
 	procedure affiche_win_consultFinalistes(widget : access Gtk_Widget_Record'Class);
 	procedure affiche_win_modifierInfosGroupe(widget : access Gtk_Widget_Record'Class);
+	procedure affiche_win_consultBilanFestival(widget : access Gtk_Widget_Record'Class);
+	procedure affiche_win_enregistrerGagnantFestival(widget : access Gtk_Widget_Record'Class);
 
 end P_window_princ;
