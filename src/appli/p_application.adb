@@ -486,4 +486,25 @@ package body p_application is
 		programme_jour_festival_io.save(prog, false);
 	end creer_groupe_journee;
 
+	procedure retrouver_finalistes(groupes : out Groupe_List.vector ; villes : out Ville_List.vector) is
+		ens_participant : Participant_Festival_List.Vector;
+		c : db_commons.Criteria;
+		procedure remplir_groupe(pos : Participant_Festival_List.cursor) is
+			participant : tParticipant_Festival;
+		begin
+			participant := Participant_Festival_List.element(pos);
+			Groupe_List.append(groupes, groupe_io.Retrieve_by_pk(participant.Nom_Groupe_Inscrit));
+			Ville_List.append(villes, ville_io.Retrieve_by_pk(participant.festival));
+		end remplir_groupe;
+	begin
+		participant_festival_io.Add_Gagnant(c, true);
+		ens_participant := participant_festival_io.retrieve(c);
+
+		if Participant_Festival_List.is_empty(ens_participant) then
+			raise ExAucunFinaliste;
+		end if;
+
+		Participant_Festival_List.iterate(ens_participant, remplir_groupe'Access);
+	end retrouver_finalistes;
+
 end p_application;

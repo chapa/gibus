@@ -61,6 +61,8 @@ package  p_application is
 
 	procedure creer_groupe_journee(nomGroupe : in String ; numJournee, numOrdre : in integer);
 
-	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste : exception;
+	procedure retrouver_finalistes(groupes : out Groupe_List.vector ; villes : out Ville_List.vector);
+
+	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste : exception;
 
 end p_application; 
