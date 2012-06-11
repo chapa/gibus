@@ -23,7 +23,7 @@ package body P_window_enregistrerGagnant is
 	entryLieu,entryDate,entryPrixPlace,entryJournee1,entryJournee2,entryNbGroupe1,entryNbGroupe2,entryHeureDeb1,entryHeureDeb2 : Gtk_GEntry;
 	treeviewVilles,treeviewGroupes:Gtk_Tree_View;
 	modele_ville,modele_groupe: Gtk_Tree_Store;
-	rang_ville : Gtk_Tree_Iter := Null_Iter;
+	rang_ville,rang_groupe : Gtk_Tree_Iter := Null_Iter;
 
 	procedure alimente_ville(pos : ville_List.Cursor) is
 		ville : based108_data.tVille;
@@ -34,13 +34,13 @@ package body P_window_enregistrerGagnant is
 		Set (modele_ville, rang_ville, 0, p_conversion.to_string(ville.nom_ville));
 	end alimente_ville;
 
-	procedure alimente_groupe(pos : ville_List.Cursor) is
-		ville : based108_data.tGroupe;
+	procedure alimente_groupe(pos : Participant_Festival_List.Cursor) is
+		groupe : based108_data.tParticipant_Festival;
 	begin
-		ville := ville_List.element(pos);
-		append(modele_ville, rang_ville, Null_Iter); -- rajoute une ligne vide
+		groupe := Participant_Festival_List.element(pos);
+		append(modele_groupe, rang_groupe, Null_Iter); -- rajoute une ligne vide
 		-- et met dans la colonne 1 de cette ligne le nom de la ville
-		Set (modele_ville, rang_ville, 0, p_conversion.to_string(ville.nom_ville));
+		Set (modele_groupe, rang_groupe, 0, p_conversion.to_string(groupe.Nom_Groupe_Inscrit));
 	end alimente_groupe;
 
 	
@@ -162,11 +162,11 @@ package body P_window_enregistrerGagnant is
 		if rang_ville = Null_Iter then
 			raise ExManqueInfos;
 		end if;
+		to_ada_type ((Get_String(modele_groupe, rang_ville, 0)),fest.Ville_Festival);
 
-
-		retrouver_groupes_ville(to_ada_type ((Get_String(modele_groupe, rang_ville, 0)),fest.Ville_Festival) , participants , nbGroupes);
+		retrouver_groupes_ville(fest.Ville_Festival , participants , nbGroupes);
 		clear (modele_groupe);
-		ville_List.iterate(participants ,alimente_groupe'Access);
+		Participant_Festival_List.iterate(participants ,alimente_groupe'Access);
 
 
 
