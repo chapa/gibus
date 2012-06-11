@@ -87,7 +87,7 @@ package body p_application is
 			ensJour : Jour_Festival_List.vector;
 			j1, j2 : tjour_festival;  -- les 2 journées d'un festival
 			ensProg1, ensProg2 : Programme_Jour_Festival_List.Vector;-- programme des 2 journées
-			ensGroupesInscrits : participant_festival_list.vector;
+			ensGroupesInscrits : Participant_Festival_List.vector;
 			ville : tville;
 		begin
 			fest := festival_List.element( pos );
@@ -310,6 +310,66 @@ package body p_application is
 		nbGroupes := integer(participant_festival_io.card(participants));
 	end;
 
+	----
+	-- Procédure qui retourne les groupes participants (participants) au festival de la ville de nom nomVille mais qui ne sont pas inscrits dans une journée
+	-- Utilisée dans le CU5 : programmerFestival
+	----
+	procedure retrouver_groupes_ville_sans_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer) is
+		festival : tFestival;
+		ensParticipants : Participant_Festival_List.vector;
+		procedure verifie_participant(pos : Participant_Festival_List.cursor) is
+			participant : tParticipant_Festival;
+			c : db_commons.Criteria;
+		begin
+			participant := Participant_Festival_List.element(pos);
+			programme_jour_festival_io.Add_Nom_Groupe_Programme(c, participant.Nom_Groupe_Inscrit);
+			if programme_jour_festival_io.is_empty(programme_jour_festival_io.retrieve(c)) then
+				Participant_Festival_List.append(participants, participant);
+			end if;
+		end verifie_participant;
+	begin
+		festival := festival_io.Retrieve_by_pk(nomVille);
+		ensParticipants := festival_io.Retrieve_Associated_Participant_Festivals(festival);
+		Participant_Festival_List.iterate(ensParticipants, verifie_participant'Access);
+		nbGroupes := integer(participant_festival_io.card(participants));
+	end retrouver_groupes_ville_sans_journee;
+
+	procedure retrouver_groupes_ville_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; numJournee : in integer) is
+		ensJour : Jour_Festival_List.Vector;
+		idJour : integer;
+		c, c2 : db_commons.Criteria;
+		ensProgJourFest : Programme_Jour_Festival_List.Vector;
+		procedure verifie_participant(pos : Programme_Jour_Festival_List.cursor) is
+			participant : tParticipant_Festival;
+		begin
+			participant := participant_festival_io.Retrieve_by_pk(Programme_Jour_Festival_List.element(pos).Nom_Groupe_Programme, nomVille);
+			Participant_Festival_List.append(participants, participant);
+		end verifie_participant;
+	begin
+		jour_festival_io.Add_Festival(c, nomVille);
+		jour_festival_io.Add_Num_Ordre(c, numJournee);
+		ensJour := jour_festival_io.retrieve(c);
+		idJour := Jour_Festival_List.element(ensJour, Jour_Festival_List.first_index(ensJour)).Id_Jour_Festival;
+		programme_jour_festival_io.Add_Jour_Fest(c2, idJour);
+		ensProgJourFest := programme_jour_festival_io.retrieve(c2);
+		Programme_Jour_Festival_List.iterate(ensProgJourFest, verifie_participant'Access);
+	end retrouver_groupes_ville_journee;
+
+	procedure retrouver_nbgroupes_journees(nomVille : in Unbounded_String ; nbGroupesJ1, nbGroupesJ2 : out integer) is
+		c : db_commons.Criteria;
+		ensJour : Jour_Festival_List.Vector;
+	begin
+		jour_festival_io.Add_Festival(c, nomVille);
+		ensJour := jour_festival_io.retrieve(c);
+		if not jour_festival_io.is_empty(ensJour) then
+			nbGroupesJ1 := Jour_Festival_List.element(ensJour, Jour_Festival_List.first_index(ensJour)).Nbre_Concert_Max;
+			nbGroupesJ2 := Jour_Festival_List.element(ensJour, Jour_Festival_List.last_index(ensJour)).Nbre_Concert_Max;
+		else
+			nbGroupesJ1 := 0;
+			nbGroupesJ2 := 0;
+		end if;
+	end retrouver_nbgroupes_journees;
+
 	procedure creer_festival (fest:in out tFestival;jourfest1,jourfest2:in out tJour_Festival)is
 		
 	begin
@@ -338,7 +398,7 @@ package body p_application is
 			ensJour : Jour_Festival_List.vector;
 			j1, j2 : tjour_festival;  -- les 2 journées d'un festival
 			ensProg1, ensProg2 : Programme_Jour_Festival_List.Vector;-- programme des 2 journées
-			ensGroupesInscrits : participant_festival_list.vector;
+			ensGroupesInscrits : Participant_Festival_List.vector;
 			ville : tville;
 		begin
 			fest := festival_List.element( pos );
@@ -391,6 +451,17 @@ package body p_application is
 	begin
 		festival := festival_io.retrieve_by_pk(festival.Ville_Festival);
 	end consulter_journee_festival;
+
+	procedure vider_journees(nomVille : in Unbounded_String) is
+		jours_festival : Jour_Festival_List.Vector;
+		c, c2 : db_commons.Criteria;
+	begin
+		jour_festival_io.Add_Festival(c, nomVille);
+		jours_festival := jour_festival_io.retrieve(c);
+		programme_jour_festival_io.Add_Jour_Fest(c2, Jour_Festival_List.element(jours_festival, Jour_Festival_List.first_index(jours_festival)).Id_Jour_Festival);
+		programme_jour_festival_io.Add_Jour_Fest(c2, Jour_Festival_List.element(jours_festival, Jour_Festival_List.last_index(jours_festival)).Id_Jour_Festival, db_commons.eq, db_commons.join_or);
+		programme_jour_festival_io.delete(c2);
+	end vider_journees;
 
 	procedure creer_groupe_journee(nomGroupe : in String ; numJournee, numOrdre : in integer) is
 		prog : tProgramme_Jour_Festival;

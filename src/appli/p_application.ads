@@ -41,6 +41,12 @@ package  p_application is
 
 	procedure retrouver_groupes_ville(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer);
 
+	procedure retrouver_groupes_ville_sans_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer);
+
+	procedure retrouver_groupes_ville_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; numJournee : in integer);
+
+	procedure retrouver_nbgroupes_journees(nomVille : in Unbounded_String ; nbGroupesJ1, nbGroupesJ2 : out integer);
+
 	procedure retrouver_villes_sans_programme_avec_groupes(ensVP : out based108_data.Ville_List.Vector);
 
 	procedure retrouver_ville_sans_festival(ensVF : out based108_data.ville_List.Vector);
@@ -50,6 +56,8 @@ package  p_application is
 	procedure creer_groupe(groupe : in tGroupe ; nomVille : in Unbounded_String);
 
 	procedure consulter_journee_festival(festival : in out tFestival);
+
+	procedure vider_journees(nomVille : in Unbounded_String);
 
 	procedure creer_groupe_journee(nomGroupe : in String ; numJournee, numOrdre : in integer);
 

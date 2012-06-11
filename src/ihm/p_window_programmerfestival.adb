@@ -29,6 +29,7 @@ package body P_Window_ProgrammerFestival is
 	treeviewVilles, treeviewListeGroupes, treeviewJournee1, treeviewJournee2 : Gtk_Tree_View;
 	modele_ville, modele_liste_groupe, modele_journee1, modele_journee2 : Gtk_Tree_Store; -- le modèle associé aux vues
 	rang_ville, rang_liste_groupe, rang_journee1, rang_journee2 : Gtk_Tree_Iter := Null_Iter; -- lignes dans les modeles
+	nbGroupesJ1, nbGroupesJ2 : integer; -- nombre de groupes dans chaque journées
 
 	-- construit le modèle associé à la vue treeviewVilles avec une ville par ligne
 	procedure alimente_ville(pos : ville_List.Cursor) is
@@ -141,10 +142,26 @@ package body P_Window_ProgrammerFestival is
 		Set(modele_liste_groupe, rang_liste_groupe, 0, p_conversion.to_string(groupe.Nom_Groupe_Inscrit));
 	end alimente_groupe;
 
+	procedure alimente_groupe_j1(pos : Participant_Festival_List.Cursor) is
+		groupe : tParticipant_Festival;
+	begin
+		groupe := Participant_Festival_List.element(pos);
+		append(modele_journee1, rang_journee1, Null_Iter);
+		Set(modele_journee1, rang_journee1, 0, p_conversion.to_string(groupe.Nom_Groupe_Inscrit));
+	end alimente_groupe_j1;
+
+	procedure alimente_groupe_j2(pos : Participant_Festival_List.Cursor) is
+		groupe : tParticipant_Festival;
+	begin
+		groupe := Participant_Festival_List.element(pos);
+		append(modele_journee2, rang_journee2, Null_Iter);
+		Set(modele_journee2, rang_journee2, 0, p_conversion.to_string(groupe.Nom_Groupe_Inscrit));
+	end alimente_groupe_j2;
+
 	procedure affRegion2(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
 		ville : tVille;
-		groupes : Participant_Festival_List.Vector;
+		groupes, groupes_j1, groupes_j2 : Participant_Festival_List.Vector;
 		nbGroupes : integer;
 		festival : tFestival;
 	begin
@@ -156,14 +173,20 @@ package body P_Window_ProgrammerFestival is
 			-- récupération de la valeur de la colonne 1 dans la ligne sélectionnée
 			to_ada_type((Get_String(modele_ville, rang_ville, 0)), ville.Nom_Ville);
 			-- lance la prodédure de consulation des groupes en fonction du nom de la ville
-			p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
+			p_application.retrouver_groupes_ville_sans_journee(ville.Nom_Ville, groupes, nbGroupes);
+			p_application.retrouver_groupes_ville_journee(ville.Nom_Ville, groupes_j1, 1);
+			p_application.retrouver_groupes_ville_journee(ville.Nom_Ville, groupes_j2, 2);
+			p_application.retrouver_nbgroupes_journees(ville.nom_ville, nbGroupesJ1, nbGroupesJ2);
 			if nbGroupes = 0 then
 				rep := Message_Dialog("Il n'y a pas de groupes encore inscrits pour ce festival (normalement impossible)");
 			end if;
 
 			clear(modele_liste_groupe);
-			-- alimentation du modèle avec les noms des groupes
 			Participant_Festival_List.iterate(groupes, alimente_groupe'Access);
+			clear(modele_journee1);
+			Participant_Festival_List.iterate(groupes_j1, alimente_groupe_j1'Access);
+			clear(modele_journee2);
+			Participant_Festival_List.iterate(groupes_j2, alimente_groupe_j2'Access);
 
 			festival.Ville_Festival := ville.Nom_Ville;
 			p_application.consulter_journee_festival(festival);
@@ -190,10 +213,18 @@ package body P_Window_ProgrammerFestival is
 	procedure ajouterGroupeJ1 is
 		rep : Message_Dialog_Buttons;
 		groupe : tGroupe;
+		nb : integer := 0;
 	begin
+		rang_journee1 := Get_Iter_First(modele_journee1);
+		while rang_journee1 /= Null_Iter loop
+			nb := nb + 1;
+			Next(modele_journee1, rang_journee1);
+		end loop;
 		Get_Selected(Get_Selection(treeviewListeGroupes), Gtk_Tree_Model(modele_liste_groupe), rang_liste_groupe);
 		if rang_liste_groupe = Null_Iter then 
 			rep := Message_Dialog("Choisissez un groupe");
+		elsif nb >= nbGroupesJ1 then
+			rep := Message_Dialog("Cette journée est pleine");
 		else
 			to_ada_type((Get_String(modele_liste_groupe, rang_liste_groupe, 0)), groupe.Nom_Groupe);
 			append(modele_journee1, rang_journee1, Null_Iter);
@@ -220,10 +251,18 @@ package body P_Window_ProgrammerFestival is
 	procedure ajouterGroupeJ2 is
 		rep : Message_Dialog_Buttons;
 		groupe : tGroupe;
+		nb : integer := 0;
 	begin
+		rang_journee2 := Get_Iter_First(modele_journee2);
+		while rang_journee2 /= Null_Iter loop
+			nb := nb + 1;
+			Next(modele_journee2, rang_journee2);
+		end loop;
 		Get_Selected(Get_Selection(treeviewListeGroupes), Gtk_Tree_Model(modele_liste_groupe), rang_liste_groupe);
 		if rang_liste_groupe = Null_Iter then 
 			rep := Message_Dialog("Choisissez un groupe");
+		elsif nb >= nbGroupesJ2 then
+			rep := Message_Dialog("Cette journée est pleine");
 		else
 			to_ada_type((Get_String(modele_liste_groupe, rang_liste_groupe, 0)), groupe.Nom_Groupe);
 			append(modele_journee2, rang_journee2, Null_Iter);
@@ -248,9 +287,12 @@ package body P_Window_ProgrammerFestival is
 	end retirerGroupeJ2;
 
 	procedure enregistrerFestival(widget : access Gtk_Widget_Record'Class) is
+		ville : tVille;
 		rep : Message_Dialog_Buttons;
 		i : integer := 1;
 	begin
+		to_ada_type((Get_String(modele_ville, rang_ville, 0)), ville.Nom_Ville);
+		p_application.vider_journees(ville.Nom_Ville);
 		rang_journee1 := Get_Iter_First(modele_journee1);
 		while rang_journee1 /= Null_Iter loop
 			p_application.creer_groupe_journee(Get_String(modele_journee1, rang_journee1, 0), 1, i);
@@ -265,7 +307,7 @@ package body P_Window_ProgrammerFestival is
 			i := i + 1;
 		end loop;
 
-		rep := Message_Dialog("Le festival a bien été enregistré");
+		rep := Message_Dialog("La programmation du festival a bien été enregistrée");
 		destroy(window);
 	end enregistrerFestival;
 
