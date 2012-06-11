@@ -97,6 +97,7 @@ package body P_window_enregVilles is
 		end if;
 		-- affectation de la variable ville
 		p_conversion.to_ada_type(get_text(entryNomVille), ville.nom_ville );
+		p_conversion.to_ada_type(p_application.parseVille(to_string(ville.nom_ville)), ville.nom_ville);
 		p_conversion.to_ada_type(get_text(entryMelOrga), ville.mel_contact);
 		-- lance la prodédure d'enregistrement de la ville dans la base
 		p_application.creer_ville(ville);

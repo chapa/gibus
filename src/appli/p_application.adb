@@ -14,6 +14,36 @@ with ada.containers;
 
 package body p_application is
 
+	function parseVille(str : in String) return String is
+		newStr : string(str'range);
+		function min(c : in Character) return Character is
+		begin
+			if c in 'A'..'Z' then
+				return character'val(character'pos(c) + 32);
+			else
+				return c;
+			end if;
+		end min;
+		function maj(c : in Character) return Character is
+		begin
+			if c in 'a'..'z' then
+				return character'val(character'pos(c) - 32);
+			else
+				return c;
+			end if;
+		end maj;
+	begin
+		for i in str'range loop
+			if str(i) = ' ' then
+				newStr(i) := '-';
+			else
+				newStr(i) := min(str(i));
+			end if;
+		end loop;
+		newStr(str'first) := maj(str(str'first));
+		return newStr;
+	end parseVille;
+
 	----
 	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
 	-- DANS QUEL CU EST-ELLE UTILISÉE ?

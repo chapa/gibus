@@ -4,6 +4,8 @@ with ada.strings.Unbounded; use ada.strings.Unbounded;
 with ada.Calendar;
 package  p_application is
 
+	function parseVille(str : in String) return String;
+
 	-- vidage des données de la base
 	procedure vider_tables ;
 
