@@ -113,7 +113,7 @@ package body p_application is
 			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
 
 			-- teste si le festival est entièrement programmé et ajoute la ville dans ensV
-			if n1 = n2 then
+			if n1 = n2 AND n2 > 0 then
 				ville.nom_ville := fest.ville_festival;
 				Ville_List.append (ensVP, ville);
 			end if;
