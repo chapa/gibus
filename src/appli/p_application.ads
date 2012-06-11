@@ -65,6 +65,8 @@ package  p_application is
 
 	procedure retrouver_villes_sans_gagnant (ensV : out ville_List.Vector) ;
 
-	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste : exception;
+	procedure retrouver_finalistes(groupes : out Groupe_List.vector ; villes : out Ville_List.vector);
+
+	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste : exception;
 
 end p_application; 

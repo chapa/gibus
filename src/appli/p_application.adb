@@ -113,7 +113,7 @@ package body p_application is
 			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
 
 			-- teste si le festival est entièrement programmé et ajoute la ville dans ensV
-			if n1 = n2 then
+			if n1 = n2 AND n2 > 0 then
 				ville.nom_ville := fest.ville_festival;
 				Ville_List.append (ensVP, ville);
 			end if;
@@ -498,6 +498,7 @@ package body p_application is
 	
 		
 
+
 		procedure verifie_gagne(pos : ville_List.cursor) is
 			ville : tville;
 			c : db_commons.Criteria;
@@ -519,4 +520,26 @@ package body p_application is
 
 		if ville_io.is_empty(ensV) then raise ExAucuneVille ;end if;
 	end retrouver_villes_sans_gagnant;
+
+	procedure retrouver_finalistes(groupes : out Groupe_List.vector ; villes : out Ville_List.vector) is
+		ens_participant : Participant_Festival_List.Vector;
+		c : db_commons.Criteria;
+		procedure remplir_groupe(pos : Participant_Festival_List.cursor) is
+			participant : tParticipant_Festival;
+		begin
+			participant := Participant_Festival_List.element(pos);
+			Groupe_List.append(groupes, groupe_io.Retrieve_by_pk(participant.Nom_Groupe_Inscrit));
+			Ville_List.append(villes, ville_io.Retrieve_by_pk(participant.festival));
+		end remplir_groupe;
+	begin
+		participant_festival_io.Add_Gagnant(c, true);
+		ens_participant := participant_festival_io.retrieve(c);
+
+		if Participant_Festival_List.is_empty(ens_participant) then
+			raise ExAucunFinaliste;
+		end if;
+
+		Participant_Festival_List.iterate(ens_participant, remplir_groupe'Access);
+	end retrouver_finalistes;
+
 end p_application;
