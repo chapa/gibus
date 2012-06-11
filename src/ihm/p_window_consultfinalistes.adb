@@ -14,9 +14,13 @@ with p_util_treeview; use p_util_treeview; -- utilitaire de gestion du composant
 
 with p_conversion; use p_conversion; -- utilitaire de conversion
 with based108_data; use based108_data; -- types Ada
+with base_types; use base_types; -- types énumérés
 with p_application; use p_application; -- couche application
 
 package body P_Window_ConsultFinalistes is
+
+	-- instanciation du module p_enum pour les genres de musique
+	package p_enumGenre is new p_conversion.p_enum(tgenre_enum);
 
 	window : Gtk_Window;
 	butAnnuler : Gtk_Button;
@@ -34,19 +38,21 @@ package body P_Window_ConsultFinalistes is
 			groupe := groupe_list.element(pos);
 			append(modele_groupe, rang_groupe, Null_Iter);
 			Set(modele_groupe, rang_groupe, 0, p_conversion.to_string(groupe.nom_groupe));
+			Set(modele_groupe, rang_groupe, 2, p_enumGenre.to_string(groupe.genre));
 		end alimente_groupes;
 		procedure alimente_villes(pos : ville_List.cursor) is
 			ville : tVille;
 		begin
 			ville := ville_List.element(pos);
-			append(modele_groupe, rang_groupe, Null_Iter);
 			Set(modele_groupe, rang_groupe, 1, p_conversion.to_string(ville.nom_ville));
+			Next(modele_groupe, rang_groupe);
 		end alimente_villes;
 	begin
 		p_application.retrouver_finalistes(ens_finalistes, ens_villes);
 
 		clear(modele_groupe);
 		groupe_list.iterate(ens_finalistes, alimente_groupes'Access);
+		rang_groupe := Get_Iter_First(modele_groupe);
 		ville_List.iterate(ens_villes, alimente_villes'Access);
 		
 		exception
@@ -66,8 +72,10 @@ package body P_Window_ConsultFinalistes is
 
 		Glade.XML.signal_connect(XML, "on_buttonFermer_clicked", ferme'address,null_address);
 
-		-- creation pour la vue treeviewGroupesFinalistes d'une colonne et du modele associé
+		-- creation pour la vue treeviewGroupesFinalistes des colonne et du modele associé
+		p_util_treeview.creerColonne("nomGroupe ", treeviewGroupesFinalistes, false);
 		p_util_treeview.creerColonne("nomVille ", treeviewGroupesFinalistes, false);
+		p_util_treeview.creerColonne("genre ", treeviewGroupesFinalistes, false);
 		creerModele(treeviewGroupesFinalistes, modele_groupe);
 
 		init_fenetre;
