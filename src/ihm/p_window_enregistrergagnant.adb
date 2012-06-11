@@ -20,13 +20,12 @@ package body P_window_enregistrerGagnant is
 
 	window : Gtk_Window;
 	butAnnuler, butEnregistrer,butRetour,butSelectionner  : Gtk_Button;
-	entryLieu,entryDate,entryPrixPlace,entryJournee1,entryJournee2,entryNbGroupe1,entryNbGroupe2,entryHeureDeb1,entryHeureDeb2 : Gtk_GEntry;
 	treeviewVilles,treeviewGroupes:Gtk_Tree_View;
 	modele_ville,modele_groupe: Gtk_Tree_Store;
 	rang_ville,rang_groupe : Gtk_Tree_Iter := Null_Iter;
 
 	procedure alimente_ville(pos : ville_List.Cursor) is
-		ville : based108_data.tVille;
+		ville : based108_data.tVille; 
 	begin
 		ville := ville_List.element(pos);
 		append(modele_ville, rang_ville, Null_Iter); -- rajoute une ligne vide
@@ -103,20 +102,28 @@ package body P_window_enregistrerGagnant is
 	
 	procedure enregistrer (widget : access Gtk_Widget_Record'Class)is
 		fest:tFestival;
+		participants:tParticipant_Festival;
 		jourfest1,jourfest2:tJour_Festival;
 		rep : Message_Dialog_Buttons;
 		ExManqueInfos : exception;
 	begin
-		Get_Selected(Get_Selection(treeviewGroupes), Gtk_Tree_Model(modele_groupe), rang_ville);
-		if rang_ville = Null_Iter   then
+		ecrire("h1");
+		Get_Selected(Get_Selection(treeviewGroupes), Gtk_Tree_Model(modele_groupe), rang_groupe);
+		ecrire("h2");
+		Get_Selected(Get_Selection(treeviewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
+		ecrire("h3");
+		if rang_ville = Null_Iter or rang_groupe = Null_Iter   then
 			raise ExManqueInfos;
 		end if;
-		to_ada_type ((Get_String(modele_groupe, rang_ville, 0)),fest.Ville_Festival) ;
-
+		ecrire("h4");
+		to_ada_type ((Get_String(modele_groupe, rang_groupe, 0)),participants.Nom_Groupe_Inscrit) ;
+		ecrire("h5");
+		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),participants.Festival);
+		ecrire("h6");
 		
 		
 		
-		rep:=Message_Dialog ("Le gagnant est enregistrer");
+		rep:=Message_Dialog ("Le gagnant est enregistré");
 
 		destroy (window);
 		exception
@@ -124,7 +131,7 @@ package body P_window_enregistrerGagnant is
 			when ExvilleExiste => rep:=Message_Dialog ("La ville était déjà enregistrée !");
 				init_fenetre;
 			-- cas où une donnée obligatoire est absente
-			when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
+			when ExManqueInfos => rep:=Message_Dialog ("Selectionner un groupe");
 			-- cas d'une erreur de type dans les donnéess
 			when Exconversion => return;
 	
@@ -145,8 +152,7 @@ package body P_window_enregistrerGagnant is
 
 		set_sensitive(treeviewVilles, true);
 		set_sensitive(treeviewGroupes, false);
-		exception
-		when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
+		
 
 	end affRegion1;
 	
@@ -162,8 +168,7 @@ package body P_window_enregistrerGagnant is
 		if rang_ville = Null_Iter then
 			raise ExManqueInfos;
 		end if;
-		to_ada_type ((Get_String(modele_groupe, rang_ville, 0)),fest.Ville_Festival);
-
+		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),fest.Ville_Festival);
 		retrouver_groupes_ville(fest.Ville_Festival , participants , nbGroupes);
 		clear (modele_groupe);
 		Participant_Festival_List.iterate(participants ,alimente_groupe'Access);

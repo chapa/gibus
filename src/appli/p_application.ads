@@ -61,6 +61,10 @@ package  p_application is
 
 	procedure creer_groupe_journee(nomGroupe : in String ; numJournee, numOrdre : in integer);
 
+	procedure inscrire_groupe(participant : in out  tParticipant_Festival );
+
+	procedure retrouver_villes_sans_gagnant (ensV : out ville_List.Vector) ;
+
 	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste : exception;
 
 end p_application; 

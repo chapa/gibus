@@ -485,5 +485,38 @@ package body p_application is
 		prog := (nomG, Jour_Festival_List.element(jours_festival, Jour_Festival_List.first_index(jours_festival)).Id_Jour_Festival, numOrdre);
 		programme_jour_festival_io.save(prog, false);
 	end creer_groupe_journee;
+	procedure inscrire_groupe(participant : in out tParticipant_Festival )is
+	begin
+		participant.gagnant:=true;
+		participant_festival_io.save(participant,true);
+	end inscrire_groupe;
 
+
+	procedure retrouver_villes_sans_gagnant (ensV : out ville_List.Vector) is
+		c : db_commons.Criteria;
+
+	
+		
+
+		procedure verifie_gagne(pos : ville_List.cursor) is
+			ville : tville;
+			c : db_commons.Criteria;
+		begin
+			ville := ville_List.element(pos);
+			--programme_jour_festival_io.Add_Nom_Groupe_Programme(c, participant.Nom_Groupe_Inscrit);
+			--if programme_jour_festival_io.is_empty(programme_jour_festival_io.retrieve(c)) then
+				--Participant_Festival_List.append(participants, participant);
+			--end if;
+		end verifie_gagne;
+	
+	begin
+		
+
+		ville_io.add_nom_ville_to_orderings (c, asc);
+		ensV := ville_io.retrieve( c );
+		ville_List.iterate(ensV,verifie_gagne'Access);
+		
+
+		if ville_io.is_empty(ensV) then raise ExAucuneVille ;end if;
+	end retrouver_villes_sans_gagnant;
 end p_application;

@@ -129,7 +129,7 @@ package body p_window_princ is
 	begin
 		p_window_bilanfestival.charge;
 	end affiche_win_consultBilanFestival;
-
+	
 
 	procedure affiche_win_enregistrerGagnantFestival(widget : access Gtk_Widget_Record'Class) is
 		-- affiche la fenêtre pour consulter les finalistes
