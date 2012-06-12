@@ -308,6 +308,10 @@ package body p_application is
 		festival := festival_io.Retrieve_by_pk(nomVille);
 		participants := festival_io.Retrieve_Associated_Participant_Festivals(festival);
 		nbGroupes := integer(participant_festival_io.card(participants));
+		if nbGroupes=0 then
+			raise ExAucunGroupe;
+		end if;
+
 	end;
 
 	----
@@ -492,30 +496,31 @@ package body p_application is
 	end inscrire_groupe;
 
 
-	procedure retrouver_villes_sans_gagnant (ensV : out ville_List.Vector) is
+	procedure retrouver_villes_sans_gagnant (ensV : out based108_data.Ville_List.Vector) is
 		c : db_commons.Criteria;
-
-	
-		
-
-
+		ensVP :  based108_data.Ville_List.Vector;
 		procedure verifie_gagne(pos : ville_List.cursor) is
 			ville : tville;
 			c : db_commons.Criteria;
 		begin
 			ville := ville_List.element(pos);
-			--programme_jour_festival_io.Add_Nom_Groupe_Programme(c, participant.Nom_Groupe_Inscrit);
-			--if programme_jour_festival_io.is_empty(programme_jour_festival_io.retrieve(c)) then
-				--Participant_Festival_List.append(participants, participant);
-			--end if;
+			participant_festival_io.Add_Gagnant(c,true);
+			participant_festival_io.Add_Festival(c,ville.nom_ville);
+			
+			ecrire("t0");
+			if participant_festival_io.is_empty(participant_festival_io.Retrieve(c)) then
+				
+				Ville_List.append (ensV, ville);
+				ecrire("t2");
+			end if;
 		end verifie_gagne;
 	
 	begin
 		
 
 		ville_io.add_nom_ville_to_orderings (c, asc);
-		ensV := ville_io.retrieve( c );
-		ville_List.iterate(ensV,verifie_gagne'Access);
+		ensVp := ville_io.retrieve( c );
+		ville_List.iterate(ensVp,verifie_gagne'Access);
 		
 
 		if ville_io.is_empty(ensV) then raise ExAucuneVille ;end if;

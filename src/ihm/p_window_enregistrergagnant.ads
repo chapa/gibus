@@ -3,7 +3,7 @@ package P_window_enregistrerGagnant is
  
   procedure charge;
   procedure ferme(widget : access Gtk_Widget_Record'Class) ;
-  procedure affRegion1(widget : access Gtk_Widget_Record'Class);
+  procedure affRegion1;
   procedure affRegion2(widget : access Gtk_Widget_Record'Class);
   procedure enregistrer (widget : access Gtk_Widget_Record'Class);
 

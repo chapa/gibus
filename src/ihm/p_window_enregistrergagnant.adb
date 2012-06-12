@@ -48,7 +48,7 @@ package body P_window_enregistrerGagnant is
 		ens_ville : based108_data.ville_List.Vector;
 		rep : Message_Dialog_Buttons;
 	begin
-		retrouver_villes(ens_ville );
+		retrouver_villes_sans_gagnant(ens_ville );
 		clear (modele_ville);
 		ville_List.iterate(ens_ville ,alimente_ville'Access);
 		
@@ -57,7 +57,7 @@ package body P_window_enregistrerGagnant is
 		-- rajoute une ligne vide
 		-- et met dans la colonne 1 de cette ligne le message
 	
-		rep:=Message_Dialog ("Aucune ville enregistrée");destroy(window);
+		rep:=Message_Dialog ("Aucune ville sans gagnant");destroy(window);
 	end init_fenetre;
 
 
@@ -122,7 +122,7 @@ package body P_window_enregistrerGagnant is
 		ecrire("h6");
 		
 		
-		
+		inscrire_groupe(participants);
 		rep:=Message_Dialog ("Le gagnant est enregistré");
 
 		destroy (window);
@@ -139,8 +139,7 @@ package body P_window_enregistrerGagnant is
 
 
 	
-	procedure affRegion1(widget : access Gtk_Widget_Record'Class)is
-	ExManqueInfos :exception;
+	procedure affRegion1 is
 	rep: Message_Dialog_Buttons;
 	begin
 		set_sensitive(butAnnuler, true);
@@ -157,6 +156,7 @@ package body P_window_enregistrerGagnant is
 	end affRegion1;
 	
 	procedure affRegion2(widget : access Gtk_Widget_Record'Class)is
+		
 		fest:tFestival;
 		rep: Message_Dialog_Buttons;
 		ExManqueInfos :exception;
@@ -186,7 +186,7 @@ package body P_window_enregistrerGagnant is
 		set_sensitive(treeviewGroupes, true);
 		exception
 		when ExManqueInfos => rep:=Message_Dialog ("Selectionner une ville");
-
+		when ExAucunGroupe => rep:=Message_Dialog ("Aucun groupe");affRegion1;
 	end affRegion2;
 	
 
