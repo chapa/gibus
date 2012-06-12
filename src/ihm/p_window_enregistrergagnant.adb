@@ -140,7 +140,7 @@ package body P_window_enregistrerGagnant is
 
 	
 	procedure affRegion1 is
-	rep: Message_Dialog_Buttons;
+	
 	begin
 		set_sensitive(butAnnuler, true);
 		set_sensitive(butSelectionner, true);
