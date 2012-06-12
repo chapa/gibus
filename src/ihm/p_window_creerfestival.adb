@@ -53,7 +53,7 @@ package body P_window_creerfestival is
 			-- rajoute une ligne vide
 			-- et met dans la colonne 1 de cette ligne le message
 			
-			rep:=Message_Dialog ("aucune ville enregistrée");destroy(window);
+			rep:=Message_Dialog ("aucune ville sans festival programmée");destroy(window);
 	end init_fenetre;
 
 

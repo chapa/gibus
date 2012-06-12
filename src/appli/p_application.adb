@@ -51,6 +51,8 @@ package body p_application is
 	procedure vider_tables is
 		criteria : db_commons.Criteria;
 		ville:tVille;
+		fest:tFestival;
+		journ1,journ2:tJour_Festival;
 	begin
 		festival_io.delete (criteria);
 		programme_jour_festival_io.delete (criteria);
@@ -58,9 +60,17 @@ package body p_application is
 		groupe_io.delete (criteria);
 		jour_festival_io.delete (criteria);
 		ville_io.delete (criteria);
-		p_conversion.to_ada_type("Paris-gibus",ville.nom_ville);
-		p_conversion.to_ada_type("final@Paris-gibus",ville.Mel_Contact);
-		creer_ville (ville );
+		p_conversion.to_ada_type("Paris_gibus",ville.nom_ville);
+		p_conversion.to_ada_type("final@Paris_gibus",ville.Mel_Contact);
+		p_conversion.to_ada_type("Paris_gibus",fest.ville_festival);
+		p_conversion.to_ada_type("Paris_gibus",fest.ville_festival);
+		creer_ville(ville);
+		p_conversion.to_ada_type("Paris_gibus",journ1.festival);
+		p_conversion.to_ada_type("Paris_gibus",journ2.festival);
+		journ1.num_ordre:=1;
+		journ2.num_ordre:=2;
+		creer_festival(fest,journ1,journ2);
+
 	end vider_tables;
 
 	----
@@ -493,11 +503,11 @@ package body p_application is
 		prog := (nomG, Jour_Festival_List.element(jours_festival, Jour_Festival_List.first_index(jours_festival)).Id_Jour_Festival, numOrdre);
 		programme_jour_festival_io.save(prog, false);
 	end creer_groupe_journee;
-	procedure inscrire_groupe(participant : in out tParticipant_Festival )is
+	procedure marque_groupe_gagne(participant : in out tParticipant_Festival )is
 	begin
 		participant.gagnant:=true;
 		participant_festival_io.save(participant,true);
-	end inscrire_groupe;
+	end marque_groupe_gagne;
 
 
 	procedure retrouver_villes_sans_gagnant (ensV : out based108_data.Ville_List.Vector) is

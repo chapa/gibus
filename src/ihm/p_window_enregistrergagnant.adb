@@ -122,7 +122,8 @@ package body P_window_enregistrerGagnant is
 		ecrire("h6");
 		
 		
-		inscrire_groupe(participants);
+		marque_groupe_gagne(participants);
+
 		rep:=Message_Dialog ("Le gagnant est enregistré");
 
 		destroy (window);
@@ -170,6 +171,9 @@ package body P_window_enregistrerGagnant is
 		end if;
 		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),fest.Ville_Festival);
 		retrouver_groupes_ville(fest.Ville_Festival , participants , nbGroupes);
+		if nbGroupes=1 then
+			raise ExAucunGroupe;
+		end if;
 		clear (modele_groupe);
 		Participant_Festival_List.iterate(participants ,alimente_groupe'Access);
 
