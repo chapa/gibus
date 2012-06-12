@@ -161,9 +161,7 @@ package body P_Window_InscrireGroupe is
 			p_application.consulter_nbConcertsPrevus(ville.Nom_Ville, nbConcertsPrevus);
 			-- lance la prodédure de consulation des groupes en fonction du nom de la ville
 			p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
-			if nbGroupes = 0 then
-				rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
-			end if;
+
 			if nbConcertsPrevus - nbGroupes <= 0 then
 				rep := Message_Dialog("Tous les groupes ont étés enregistrés, il n'y a plus de place pour le festival de cette ville");
 				affRegion1(widget);
@@ -202,6 +200,8 @@ package body P_Window_InscrireGroupe is
 			set_sensitive(radiobuttonPunk, true);
 			set_sensitive(radiobuttonRockabilly, true);
 		end if;
+	exception
+		when ExAucunGroupe => rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
 	end affRegion2;
 
 	procedure inscrireGroupe(widget : access Gtk_Widget_Record'Class) is
