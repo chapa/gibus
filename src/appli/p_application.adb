@@ -5,6 +5,7 @@ with groupe_io;
 with jour_festival_io;
 with participant_festival_io;
 with ville_io;
+
 with GNU.DB.SQLCLI;
 with p_esiut ; use p_esiut ;
 with Ada.Exceptions ; use Ada.Exceptions ;
@@ -64,6 +65,7 @@ package body p_application is
 		p_conversion.to_ada_type("final@Paris_gibus",ville.Mel_Contact);
 		p_conversion.to_ada_type("Paris_gibus",fest.ville_festival);
 		p_conversion.to_ada_type("Paris_gibus",fest.ville_festival);
+		fest.prix_place:=50;
 		creer_ville(ville);
 		p_conversion.to_ada_type("Paris_gibus",journ1.festival);
 		p_conversion.to_ada_type("Paris_gibus",journ2.festival);
@@ -598,5 +600,88 @@ package body p_application is
 			raise ExAucunFestival;
 		end if;
 	end retrouver_festivals;
+	procedure nb_groupe_par_genre(genre:in base_types.tgenre_Enum ;nombre:out integer) is
+		c:db_commons.criteria;
+	begin
+		
+		
+		groupe_io.Add_Genre(c,genre);
+		nombre:=integer(groupe_io.card(groupe_io.Retrieve(c)));
+	end nb_groupe_par_genre;
+	procedure nb_groupe (nb_groupe:out integer)  is
+		c:db_commons.Criteria;
+	begin
+		nb_groupe:=integer(groupe_io.card(groupe_io.retrieve(c)));
+		
+	
+	end nb_groupe ;
+	procedure nb_groupe_par_ville(ensG: out based108_data.festival_List.Vector) is
+		c:db_commons.criteria;
+		ensVP:based108_data.Ville_List.Vector;
 
+		procedure remplir_festival(pos : ville_List.cursor) is
+			ville : tville;
+			c : db_commons.Criteria;
+			fest:tfestival;
+		begin
+			ville := ville_List.element(pos);
+			
+			participant_festival_io.Add_Festival(c,ville.nom_ville);
+			fest.ville_festival:=ville.nom_ville;
+			fest.prix_place	:=integer(participant_festival_io.card(participant_festival_io.retrieve(c)));
+			festival_List.append (ensG, fest);
+			
+		end remplir_festival;
+
+
+	begin
+		
+		
+		ville_io.add_nom_ville_to_orderings (c, asc);
+		
+		ensVp := ville_io.retrieve( c );
+		ville_List.iterate(ensvp, remplir_festival'Access);
+	end nb_groupe_par_ville;
+
+
+	procedure enregistrer_groupe_final(nomgroupe:in Unbounded_String )is 
+		part:tParticipant_Festival;
+		j1,j2:tjour_festival;
+		ensJ:Based108_Data.Jour_Festival_List.Vector;
+		fest:tFestival;
+		modifier:boolean:=false;
+		nb_journe: integer:=0;
+		procedure compte_groupe(pos : jour_festival_list.cursor) is
+			journe:tjour_festival;
+		begin
+			journe :=  jour_festival_List.element(pos);
+			nb_journe:=nb_journe+journe.nbre_concert_max;
+		end compte_groupe;
+		procedure ajoute_un(pos : jour_festival_list.cursor) is
+			journe:tjour_festival;
+		begin
+			journe :=  jour_festival_List.element(pos);
+			
+			if not modifier then
+				modifier:=true;
+				journe.nbre_concert_max:=(nb_journe+2)/2;
+				j1:=journe;
+			else
+				modifier:=false;
+				journe.nbre_concert_max:=(nb_journe+1)/2;
+				j2:=journe;
+			end if;
+
+		end ajoute_un;
+	begin
+		part.nom_groupe_inscrit:=nomGroupe;
+		to_ada_type("Paris_gibus",part.festival);
+		participant_festival_io.save(part);
+		to_ada_type("Paris_gibus",fest.ville_festival);
+		ensJ:=festival_io.Retrieve_Associated_Jour_Festivals(fest);
+		jour_festival_list.iterate (ensJ, compte_groupe'Access);
+		jour_festival_list.iterate (ensJ, ajoute_un'Access);
+		jour_festival_io.save(j1,true);
+		jour_festival_io.save(j2,true);
+	end enregistrer_groupe_final;
 end p_application;

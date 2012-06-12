@@ -2,6 +2,7 @@ with based108_data;use based108_data;
 with Ada.Containers.Vectors;
 with ada.strings.Unbounded; use ada.strings.Unbounded;
 with ada.Calendar;
+with base_types;
 package  p_application is
 
 	function parseVille(str : in String) return String;
@@ -73,6 +74,13 @@ package  p_application is
 	
 	procedure retrouver_festivals(festivals : out Festival_List.vector);
 
+	procedure nb_groupe_par_genre(genre:in base_types.tgenre_Enum ;nombre:out integer);
+
+	procedure nb_groupe_par_ville(ensG: out based108_data.festival_List.Vector);
+
+	procedure nb_groupe (nb_groupe:out integer)  ;
+
+	procedure enregistrer_groupe_final(nomgroupe:in Unbounded_String );
 	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste, ExAucunFestival : exception;
 
 end p_application; 

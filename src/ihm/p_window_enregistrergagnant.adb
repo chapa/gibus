@@ -120,12 +120,16 @@ package body P_window_enregistrerGagnant is
 		ecrire("h5");
 		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),participants.Festival);
 		ecrire("h6");
-		
-		
 		marque_groupe_gagne(participants);
+		if Get_String(modele_ville, rang_ville, 0)/="Paris_gibus" then
+			enregistrer_groupe_final(participants.Nom_Groupe_Inscrit);
+			rep:=Message_Dialog ("Le gagnant est enregistré et inscrit à la final");
 
-		rep:=Message_Dialog ("Le gagnant est enregistré");
-
+			
+		
+		else
+			rep:=Message_Dialog ("Le gagnant est enregistré");
+		end if;
 		destroy (window);
 		exception
 			-- cas d'une ville déjà enregistrée

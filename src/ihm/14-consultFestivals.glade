@@ -3,6 +3,8 @@
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy project-wide -->
   <widget class="GtkWindow" id="windowConsultFestivals">
+    <property name="width_request">448</property>
+    <property name="height_request">141</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Consulter la liste des festivals</property>
     <property name="modal">True</property>
