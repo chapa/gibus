@@ -37,6 +37,8 @@ package  p_application is
 
 	procedure retrouver_ville_avec_festival(ensVF : out based108_data.ville_List.Vector);
 
+	procedure retrouver_ville_avec_festival_non_rempli(ensVF : out based108_data.ville_List.Vector);
+
 	procedure consulter_nbConcertsPrevus(Nom_Ville : in Unbounded_String ; nbConcertsPrevus : out integer);
 
 	procedure retrouver_groupes_ville(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer);

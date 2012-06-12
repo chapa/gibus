@@ -235,7 +235,7 @@ package body p_application is
 
 	----
 	-- procédure qui retourne les ville avec festivals
-	-- Utilisée dans le CU3 (consultFestival) et CU4 (inscrireGroupe) 
+	-- Utilisée dans le CU3 (consultFestival)
 	----
 	procedure retrouver_ville_avec_festival(ensVF : out based108_data.ville_List.Vector) is
 		c : db_commons.Criteria;
@@ -244,7 +244,6 @@ package body p_application is
 			ville : tVille;
 		begin
 			ville := ville_List.element( pos );
-			ecrire( p_conversion.to_string(ville.nom_ville));
 			if not festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) then
 				ville_list.append (ensVF, ville);
 			end if;
@@ -258,6 +257,34 @@ package body p_application is
 			raise ExAucuneVille;
 		end if;
 	end retrouver_ville_avec_festival;
+
+	----
+	-- procédure qui retourne les ville avec festivals
+	-- Utilisée dans le CU4 (inscrireGroupe) 
+	----
+	procedure retrouver_ville_avec_festival_non_rempli(ensVF : out based108_data.ville_List.Vector) is
+		c : db_commons.Criteria;
+		ensVille : ville_List.Vector;
+		nbGroupes, nbConcertsPrevus : integer;
+		procedure verifie_festival (pos : ville_list.cursor) is
+			ville : tVille;
+		begin
+			ville := ville_List.element( pos );
+			nbGroupes := integer(participant_festival_io.card(festival_io.Retrieve_Associated_Participant_Festivals(festival_io.Retrieve_by_pk(ville.nom_ville))));
+			consulter_nbConcertsPrevus(ville.nom_ville, nbConcertsPrevus);
+			if not festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) AND nbConcertsPrevus - nbGroupes > 0 then
+				ville_list.append (ensVF, ville);
+			end if;
+		end verifie_festival;
+	begin
+		ville_io.add_nom_ville_to_orderings(c,asc);
+		ensVille:= ville_io.retrieve(c);
+		
+		ville_list.iterate (ensVille, verifie_festival'Access);
+		if ville_io.is_empty(ensVF) then
+			raise ExAucuneVille;
+		end if;
+	end retrouver_ville_avec_festival_non_rempli;
 
 	----
 	-- procédure qui retourne les ville sans festivals
@@ -322,10 +349,6 @@ package body p_application is
 		festival := festival_io.Retrieve_by_pk(nomVille);
 		participants := festival_io.Retrieve_Associated_Participant_Festivals(festival);
 		nbGroupes := integer(participant_festival_io.card(participants));
-		if nbGroupes=0 then
-			raise ExAucunGroupe;
-		end if;
-
 	end;
 
 	----
