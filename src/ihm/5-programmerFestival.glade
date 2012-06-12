@@ -370,7 +370,7 @@
             <property name="layout_style">spread</property>
             <child>
               <widget class="GtkButton" id="buttonAnnuler2">
-                <property name="label" translatable="yes">Retour</property>
+                <property name="label" translatable="yes">Annuler</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>

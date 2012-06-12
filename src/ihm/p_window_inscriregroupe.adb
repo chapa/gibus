@@ -164,12 +164,13 @@ package body P_Window_InscrireGroupe is
 				p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
 				exception
 				when ExAucunGroupe => rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
-			end ;
-			if nbConcertsPrevus - nbGroupes <= 0 then
-				rep := Message_Dialog("Tous les groupes ont étés enregistrés, il n'y a plus de place pour le festival de cette ville");
-				affRegion1(widget);
-				return;
-			end if;
+			
+				if nbConcertsPrevus - nbGroupes <= 0 then
+					rep := Message_Dialog("Tous les groupes ont étés enregistrés, il n'y a plus de place pour le festival de cette ville");
+					affRegion1(widget);
+					return;
+				end if;
+			end;
 
 			set_text(entryNbConcertsPrevus, p_conversion.to_string(nbConcertsPrevus));
 			set_text(entryNbInscriptionsPossibles, p_conversion.to_string(nbConcertsPrevus-nbGroupes));
