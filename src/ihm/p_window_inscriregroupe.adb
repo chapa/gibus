@@ -46,11 +46,11 @@ package body P_Window_InscrireGroupe is
 		procedure errorBoxAucuneVille is
 			rep : Message_Dialog_Buttons;
 		begin
-			rep := Message_Dialog("Il n'y a pas de villes enregistrées avec un festival");
+			rep := Message_Dialog("Il n'y a pas de villes enregistrées avec un festival et de la place pour d'autres groupes");
 			destroy(window);
 		end errorBoxAucuneVille;
 	begin
-		p_application.retrouver_ville_avec_festival(ens_ville);
+		p_application.retrouver_ville_avec_festival_non_rempli(ens_ville);
 		clear(modele_ville);
 		-- alimentation du modèle avec les noms de villes
 		ville_List.iterate(ens_ville ,alimente_ville'Access);
@@ -113,6 +113,7 @@ package body P_Window_InscrireGroupe is
 		set_text(entryNomContact, "");
 		set_text(entryCoordsContact, "");
 		set_text(entryAdresseSite, "");
+		clear(modele_ville);
 		clear(modele_groupe);
 
 		set_sensitive(butAnnuler, true);
@@ -134,6 +135,8 @@ package body P_Window_InscrireGroupe is
 		set_sensitive(radiobuttonPop, false);
 		set_sensitive(radiobuttonPunk, false);
 		set_sensitive(radiobuttonRockabilly, false);
+
+		init_fenetre;
 	end affRegion1;
 
 	procedure alimente_groupe(pos : Participant_Festival_List.Cursor) is
@@ -160,17 +163,18 @@ package body P_Window_InscrireGroupe is
 			-- lance la prodédure de consulation du nombre de concerts prévus en fonction du nom de la ville
 			p_application.consulter_nbConcertsPrevus(ville.Nom_Ville, nbConcertsPrevus);
 			-- lance la prodédure de consulation des groupes en fonction du nom de la ville
-			begin
-				p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
-				exception
-				when ExAucunGroupe => rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
+
+			p_application.retrouver_groupes_ville(ville.Nom_Ville, groupes, nbGroupes);
+		
+			if nbConcertsPrevus - nbGroupes <= 0 then
+				rep := Message_Dialog("Tous les groupes ont étés enregistrés, il n'y a plus de place pour le festival de cette ville");
+				affRegion1(widget);
+				return;
+			end if;
 			
-				if nbConcertsPrevus - nbGroupes <= 0 then
-					rep := Message_Dialog("Tous les groupes ont étés enregistrés, il n'y a plus de place pour le festival de cette ville");
-					affRegion1(widget);
-					return;
-				end if;
-			end;
+			if nbGroupes = 0 then
+				rep := Message_Dialog("Il n'y a pas de groupes encore inscrits");
+			end if;
 
 			set_text(entryNbConcertsPrevus, p_conversion.to_string(nbConcertsPrevus));
 			set_text(entryNbInscriptionsPossibles, p_conversion.to_string(nbConcertsPrevus-nbGroupes));
