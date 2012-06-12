@@ -50,6 +50,7 @@ package body p_application is
 	----
 	procedure vider_tables is
 		criteria : db_commons.Criteria;
+		ville:tVille;
 	begin
 		festival_io.delete (criteria);
 		programme_jour_festival_io.delete (criteria);
@@ -57,6 +58,9 @@ package body p_application is
 		groupe_io.delete (criteria);
 		jour_festival_io.delete (criteria);
 		ville_io.delete (criteria);
+		p_conversion.to_ada_type("Paris-gibus",ville.nom_ville);
+		p_conversion.to_ada_type("final@Paris-gibus",ville.Mel_Contact);
+		creer_ville (ville );
 	end vider_tables;
 
 	----

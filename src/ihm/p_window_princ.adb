@@ -16,6 +16,7 @@ with p_window_modifierInfosGroupe;
 with p_window_bilanfestival;--(8)
 with p_window_enregistrergagnant;--(9)
 with p_application;
+with p_conversion;
 with p_esiut;use p_esiut;
 package body p_window_princ is
 
@@ -62,7 +63,9 @@ package body p_window_princ is
 		rep := Message_Dialog("Une base existe. Voulez-vous vraiment la détruire ?",confirmation, button_ok or button_no);
 		if rep = button_ok then
 			p_application.vider_tables ;
+
 			rep := Message_Dialog("Le contenu de la base est détruit");
+
 		else
 			rep:=Message_Dialog ("La base est conservée.");
 		end if;
