@@ -81,6 +81,14 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkMenuItem" id="menuitem_modifierProgrammationFestival">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Modifier la programmation d'un festival</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_menuitem_modifierProgrammationFestival_activate"/>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkSeparatorMenuItem" id="separatormenuitem2">
                         <property name="visible">True</property>
                       </widget>

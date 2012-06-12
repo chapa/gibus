@@ -16,6 +16,7 @@ with p_window_enregistrergagnant;--(9)
 with p_window_consultFinalistes; -- (10)
 with p_window_modifierInfosGroupe; -- (11)
 with p_window_consultFestivals;--(14)
+with p_window_modifierProgrammationFestival; -- (15)
 with p_application;
 with p_conversion;
 with p_esiut;use p_esiut;
@@ -41,6 +42,7 @@ package body p_window_princ is
 		Glade.XML.signal_connect(XML, "on_menuitem_enregVille_activate", affiche_win_enregVilles'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_creerFestival_activate", affiche_win_creerFestival'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_programmerFestival_activate", affiche_win_programmerFestival'address,null_address);
+		Glade.XML.signal_connect(XML, "on_menuitem_modifierProgrammationFestival_activate", affiche_win_modifierProgrammationFestival'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultFestival_activate", affiche_win_consultFestival'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultProgramme_activate", affiche_win_consultProgramme'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultFinalistes_activate", affiche_win_consultFinalistes'address,null_address);
@@ -148,5 +150,11 @@ package body p_window_princ is
 	begin
 		p_window_consultFestivals.charge;
 	end affiche_win_consultFestivals;
+
+	procedure affiche_win_modifierProgrammationFestival(widget : access Gtk_Widget_Record'Class) is
+		-- affiche la fenêtre pour modifier la programmation d'un festival
+	begin
+		p_window_modifierProgrammationFestival.charge;
+	end affiche_win_modifierProgrammationFestival;
 
 end p_window_princ;
