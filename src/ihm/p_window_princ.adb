@@ -11,12 +11,14 @@ with p_window_inscrireGroupe; -- (4)
 with p_window_programmerFestival; -- (5)
 with p_window_consultGroupe; -- (6)
 with p_window_consultProgramme; -- (7)
-with p_window_consultFinalistes; -- (10)
-with p_window_modifierInfosGroupe;
 with p_window_bilanfestival;--(8)
 with p_window_enregistrergagnant;--(9)
+with p_window_consultFinalistes; -- (10)
+with p_window_modifierInfosGroupe; -- (11)
+with p_window_consultFestivals;--(14)
 with p_application;
 with p_esiut;use p_esiut;
+
 package body p_window_princ is
 
 	window_princ : Gtk_Window; -- variable désignant la fenêtre
@@ -42,6 +44,7 @@ package body p_window_princ is
 		Glade.XML.signal_connect(XML, "on_menuitem_consultProgramme_activate", affiche_win_consultProgramme'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultFinalistes_activate", affiche_win_consultFinalistes'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_consultBilanFestival_activate", affiche_win_consultBilanFestival'address,null_address);
+		Glade.XML.signal_connect(XML, "on_menuitem_consultFestivals_activate", affiche_win_consultFestivals'address,null_address);
 
 		Glade.XML.signal_connect(XML, "on_menuitem_inscrireGroupe_activate", affiche_win_inscrireGroupe'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_modifierInfosGroupe_activate", affiche_win_modifierInfosGroupe'address,null_address);
@@ -136,5 +139,11 @@ package body p_window_princ is
 	begin
 		p_window_enregistrergagnant.charge;
 	end affiche_win_enregistrerGagnantFestival;
+
+	procedure affiche_win_consultFestivals(widget : access Gtk_Widget_Record'Class) is
+		-- affiche la fenêtre pour consulter les festivals
+	begin
+		p_window_consultFestivals.charge;
+	end affiche_win_consultFestivals;
 
 end p_window_princ;

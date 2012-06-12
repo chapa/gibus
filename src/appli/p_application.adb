@@ -552,4 +552,14 @@ package body p_application is
 		groupe_io.save(groupe, true);
 	end modifier_groupe;
 
+	procedure retrouver_festivals(festivals : out Festival_List.vector) is
+		c : db_commons.Criteria;
+	begin
+		festival_io.Add_Date_To_Orderings(c, asc);
+		festivals := festival_io.retrieve(c);
+		if festival_io.is_empty(festivals) then
+			raise ExAucunFestival;
+		end if;
+	end retrouver_festivals;
+
 end p_application;

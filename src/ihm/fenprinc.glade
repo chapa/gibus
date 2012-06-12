@@ -110,6 +110,19 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem3">
+                        <property name="visible">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_consultFestivals">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Consulter les festivals</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_menuitem_consultFestivals_activate"/>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkMenuItem" id="menuitem_consultBilanFestival">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Bilan des festivals</property>

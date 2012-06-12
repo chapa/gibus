@@ -68,7 +68,9 @@ package  p_application is
 	procedure retrouver_finalistes(groupes : out Groupe_List.vector ; villes : out Ville_List.vector);
 
 	procedure modifier_groupe(groupe : in tGroupe);
+	
+	procedure retrouver_festivals(festivals : out Festival_List.vector);
 
-	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste : exception;
+	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste, ExAucunFestival : exception;
 
 end p_application; 
