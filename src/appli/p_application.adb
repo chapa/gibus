@@ -691,13 +691,27 @@ package body p_application is
 		ensG:Based108_Data.groupe_List.Vector;
 		procedure ajouter_ville(pos :groupe_list.cursor) is
 			groupe:tgroupe;
+			c:db_commons.criteria;
+			part:tParticipant_Festival;
+			enspart:Participant_Festival_List.vector;
 		begin
-			groupe :=  groupe_List.element(pos);
 
+			groupe :=  groupe_List.element(pos);
+			participant_festival_io.Add_Festival(c,"Paris_gibus",db_commons.ne);
+			participant_festival_io.Add_Nom_Groupe_Inscrit(c,groupe.nom_groupe);
+			enspart:=participant_festival_io.Retrieve(c);
+			part:=Participant_Festival_List.element(enspart, Participant_Festival_List.first_index(enspart));
+			if not participant_festival_io.is_empty(enspart) then
+				groupe.coord_contact:=part.festival;
+				groupe_List.append (groupes, groupe);
+			end if;
 		end ajouter_ville;
 	begin
 		groupe_io.add_genre(c,genre);
 		ensG:=groupe_io.Retrieve(c);
 		groupe_List.iterate(ensG, ajouter_ville'Access);
+		if groupe_list.is_empty(ensG) then
+			raise ExAucunGroupe;
+		end if;
 	end retrouver_groupes_genre;
 end p_application;

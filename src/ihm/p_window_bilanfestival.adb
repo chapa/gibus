@@ -47,7 +47,6 @@ package p_enumGenre is new p_conversion.p_enum(tgenre_enum);
 	-- (ré)initialise la fenêtre avec la liste des villes enregistrées ou un message
 	procedure init_fenetre is
 		ens_fest : based108_data.festival_List.Vector;
-		rep : Message_Dialog_Buttons;
 		nb:integer;
 	begin
 

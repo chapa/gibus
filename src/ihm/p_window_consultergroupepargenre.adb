@@ -30,21 +30,22 @@ package body p_window_consultergroupepargenre is
 	butAnnuler, butAfficher, butRetour, butFermer:Gtk_Button;
 
 	-- construit le modèle associé à la vue treeviewVilles avec une ville par ligne
-	procedure alimente_ville(pos : ville_List.Cursor) is
-		ville : based108_data.tVille;
+	procedure alimente_groupe(pos : groupe_List.Cursor) is
+		groupe : based108_data.tgroupe;
 	begin
-		ville := ville_List.element(pos);
+		groupe := groupe_List.element(pos);
 		append(modele_groupe, rang_groupe, Null_Iter); -- rajoute une ligne vide
 		-- et met dans la colonne 1 de cette ligne le nom de la ville
-		Set (modele_groupe, rang_groupe, 0, p_conversion.to_string(ville.nom_ville));
-	end alimente_ville;
+		Set (modele_groupe, rang_groupe, 0, p_conversion.to_string(groupe.nom_groupe));
+		Set (modele_groupe, rang_groupe, 1, p_conversion.to_string(groupe.coord_contact));
+	end alimente_groupe;
 
 	
 	-- (ré)initialise la fenêtre avec la liste des villes enregistrées ou un message
 	procedure init_fenetre is
-		ens_ville : based108_data.ville_List.Vector;
 		groupe:tgroupe;
 		rep : Message_Dialog_Buttons;
+		groupes:based108_data.Groupe_List.vector;
 		
 	begin
 		if get_active(radiobuttonHard) then
@@ -61,13 +62,16 @@ package body p_window_consultergroupepargenre is
 			groupe.Genre := rockabilly;
 		end if;
 
-		p_application.retrouver_villes(ens_ville);
+		p_application.retrouver_groupes_genre(groupe.Genre,groupes);
+
 		clear (modele_groupe);
 		-- alimentation du modèle avec les noms de villes
-		ville_List.iterate(ens_ville ,alimente_ville'Access);
+		groupe_List.iterate(groupes ,alimente_groupe'Access);
 
 		exception
 			when exAucuneVille => rep:=message_dialog("hello");
+			when exAucunGroupe => rep:=message_dialog("Il n'y a aucun groupe pour cette ville");
+			affRegion1;
 	end init_fenetre;
 
 	procedure charge is
@@ -128,8 +132,9 @@ package body p_window_consultergroupepargenre is
 		
 	end affRegion2;
 	
-	procedure affRegion1(widget : access Gtk_Widget_Record'Class) is
+	procedure affRegion1 is
 	begin
+		clear (modele_groupe);
 		set_sensitive(butAnnuler, true);
 		set_sensitive(butFermer, false);
 		set_sensitive(butRetour, false);
