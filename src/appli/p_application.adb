@@ -625,7 +625,6 @@ package body p_application is
 			fest:tfestival;
 		begin
 			ville := ville_List.element(pos);
-			
 			participant_festival_io.Add_Festival(c,ville.nom_ville);
 			fest.ville_festival:=ville.nom_ville;
 			fest.prix_place	:=integer(participant_festival_io.card(participant_festival_io.retrieve(c)));
@@ -641,6 +640,9 @@ package body p_application is
 		
 		ensVp := ville_io.retrieve( c );
 		ville_List.iterate(ensvp, remplir_festival'Access);
+		if festival_io.is_empty(ensG) then
+			raise ExAucuneVille;
+		end if;
 	end nb_groupe_par_ville;
 
 
