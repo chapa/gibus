@@ -113,7 +113,7 @@ package body p_application is
 		-- conserve dans ensVP les villes pour lesquelles un festival est entièrement programmé
 		procedure verifie_prog (pos : festival_list.cursor) is
 			c , c1, c2 ,c3 : db_commons.Criteria;
-			n1, n2 : integer;
+			n1, n2, n3 : integer;
 			fest : tfestival;
 			ensJour : Jour_Festival_List.vector;
 			j1, j2 : tjour_festival;  -- les 2 journées d'un festival
@@ -143,8 +143,11 @@ package body p_application is
 			--n2 : nombre de groupes inscrits
 			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
 
+			-- n3 : nombre de groupes programmés total sur les 2 jours
+			n3 := integer(programme_jour_festival_io.card (ensProg1)) + integer(programme_jour_festival_io.card(ensProg2));
+
 			-- teste si le festival est entièrement programmé et ajoute la ville dans ensV
-			if n1 = n2 AND n2 > 0 then
+			if n1 = n2 AND n2 > 0 AND n1 = n3 then
 				ville.nom_ville := fest.ville_festival;
 				Ville_List.append (ensVP, ville);
 			end if;
