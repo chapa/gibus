@@ -380,10 +380,19 @@ package body p_application is
 		ensParticipants : Participant_Festival_List.vector;
 		procedure verifie_participant(pos : Participant_Festival_List.cursor) is
 			participant : tParticipant_Festival;
-			c : db_commons.Criteria;
+			c, c2 : db_commons.Criteria;
+			journees : jour_festival_list.vector;
+			idJournee1, idJournee2 : integer;
 		begin
 			participant := Participant_Festival_List.element(pos);
+			jour_festival_io.Add_Festival(c2, participant.festival);
+			journees := Jour_Festival_io.retrieve(c2);
+			idJournee1 := jour_festival_list.element(journees, jour_festival_list.first_index(journees)).Id_Jour_Festival;
+			idJournee2 := jour_festival_list.element(journees, jour_festival_list.last_index(journees)).Id_Jour_Festival;
 			programme_jour_festival_io.Add_Nom_Groupe_Programme(c, participant.Nom_Groupe_Inscrit);
+			programme_jour_festival_io.Add_Jour_Fest(c, idJournee1);
+			programme_jour_festival_io.Add_Nom_Groupe_Programme(c, participant.Nom_Groupe_Inscrit, db_commons.eq, db_commons.join_or);
+			programme_jour_festival_io.Add_Jour_Fest(c, idJournee2);
 			if programme_jour_festival_io.is_empty(programme_jour_festival_io.retrieve(c)) then
 				Participant_Festival_List.append(participants, participant);
 			end if;
