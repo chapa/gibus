@@ -362,12 +362,10 @@ package body p_application is
 		ensParticipants : Participant_Festival_List.vector;
 		procedure verifie_participant(pos : Participant_Festival_List.cursor) is
 			participant : tParticipant_Festival;
-			c,c1 : db_commons.Criteria;
+			c : db_commons.Criteria;
 		begin
 			participant := Participant_Festival_List.element(pos);
 			programme_jour_festival_io.Add_Nom_Groupe_Programme(c, participant.Nom_Groupe_Inscrit);
-			participant_festival_io.Add_Festival(c,nomville);
-			participant_festival_io.Add_Festival(c,nomville);
 			if programme_jour_festival_io.is_empty(programme_jour_festival_io.retrieve(c)) then
 				Participant_Festival_List.append(participants, participant);
 			end if;
