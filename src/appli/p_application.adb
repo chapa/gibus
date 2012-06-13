@@ -137,8 +137,8 @@ package body p_application is
 			-- recherche des groupes inscrits au festival de la ville
 			ensGroupesInscrits := festival_io.Retrieve_Associated_Participant_Festivals(fest);
 
-			-- n1 : nombre de groupes programmés total sur les 2 jours
-			n1 := integer(programme_jour_festival_io.card (ensProg1)) + integer(programme_jour_festival_io.card(ensProg2));
+			-- n1 : nombre de groupes prévus sur les 2 jours
+			consulter_nbConcertsPrevus(fest.Ville_Festival, n1);
 
 			--n2 : nombre de groupes inscrits
 			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
@@ -475,14 +475,14 @@ package body p_application is
 			-- recherche des groupes inscrits au festival de la ville
 			ensGroupesInscrits := festival_io.Retrieve_Associated_Participant_Festivals(fest);
 
-			-- n1 : nombre de groupes programmés total sur les 2 jours
-			n1 := integer(programme_jour_festival_io.card (ensProg1)) + integer(programme_jour_festival_io.card(ensProg2));
+			-- n1 : nombre de groupes prévus sur les 2 jours
+			consulter_nbConcertsPrevus(fest.Ville_Festival, n1);
 
 			--n2 : nombre de groupes inscrits
 			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
 
 			-- teste si le festival n'est pas entièrement programmé et ajoute la ville dans ensV (s'il y a des groupes)
-			if n1 < n2 and (n2-n1) > 0 then
+			if n2 > 0 AND n1 > n2 then
 				ville.nom_ville := fest.ville_festival;
 				Ville_List.append (ensVP, ville);
 			end if;
