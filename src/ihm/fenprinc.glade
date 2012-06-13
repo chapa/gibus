@@ -167,7 +167,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem3">
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem4">
                         <property name="visible">True</property>
                       </widget>
                     </child>
@@ -185,6 +185,14 @@
                         <property name="label" translatable="yes">Enregistrer un gagnant</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_menuitem_enregistrerGagnantFestival_activate"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_ConsultGroupeParGenre">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Conulter les groupes par genres</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_menuitem_ConsultGroupeParGenre_activate"/>
                       </widget>
                     </child>
                   </widget>

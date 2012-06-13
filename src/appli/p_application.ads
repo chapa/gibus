@@ -81,6 +81,9 @@ package  p_application is
 	procedure nb_groupe (nb_groupe:out integer)  ;
 
 	procedure enregistrer_groupe_final(nomgroupe:in Unbounded_String );
+
+	procedure retrouver_groupes_genre (genre:in base_types.tgenre_Enum;groupes :out Groupe_List.vector);
+	
 	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste, ExAucunFestival : exception;
 
 end p_application; 

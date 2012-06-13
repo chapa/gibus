@@ -123,7 +123,7 @@ package body P_window_enregistrerGagnant is
 		marque_groupe_gagne(participants);
 		if Get_String(modele_ville, rang_ville, 0)/="Paris_gibus" then
 			enregistrer_groupe_final(participants.Nom_Groupe_Inscrit);
-			rep:=Message_Dialog ("Le gagnant est enregistré et inscrit à la final");
+			rep:=Message_Dialog ("Le gagnant est enregistré et inscrit à la finale");
 
 			
 		

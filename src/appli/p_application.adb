@@ -362,10 +362,12 @@ package body p_application is
 		ensParticipants : Participant_Festival_List.vector;
 		procedure verifie_participant(pos : Participant_Festival_List.cursor) is
 			participant : tParticipant_Festival;
-			c : db_commons.Criteria;
+			c,c1 : db_commons.Criteria;
 		begin
 			participant := Participant_Festival_List.element(pos);
 			programme_jour_festival_io.Add_Nom_Groupe_Programme(c, participant.Nom_Groupe_Inscrit);
+			participant_festival_io.Add_Festival(c,nomville);
+			participant_festival_io.Add_Festival(c,nomville);
 			if programme_jour_festival_io.is_empty(programme_jour_festival_io.retrieve(c)) then
 				Participant_Festival_List.append(participants, participant);
 			end if;
@@ -684,4 +686,18 @@ package body p_application is
 		jour_festival_io.save(j1,true);
 		jour_festival_io.save(j2,true);
 	end enregistrer_groupe_final;
+	procedure retrouver_groupes_genre (genre:in base_types.tgenre_Enum;groupes :out Groupe_List.vector) is
+		c:db_commons.criteria;
+		ensG:Based108_Data.groupe_List.Vector;
+		procedure ajouter_ville(pos :groupe_list.cursor) is
+			groupe:tgroupe;
+		begin
+			groupe :=  groupe_List.element(pos);
+
+		end ajouter_ville;
+	begin
+		groupe_io.add_genre(c,genre);
+		ensG:=groupe_io.Retrieve(c);
+		groupe_List.iterate(ensG, ajouter_ville'Access);
+	end retrouver_groupes_genre;
 end p_application;

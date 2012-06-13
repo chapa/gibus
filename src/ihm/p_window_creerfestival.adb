@@ -211,6 +211,7 @@ package body P_window_creerfestival is
 		-- cas d'une erreur de type dans les donnéess
 			when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
 			when Exconversion => return;
+			when ADA.CALENDAR.TIME_ERROR => rep:=Message_Dialog ("Date incorrect");
 	
 
 	end affRegion2;
