@@ -177,7 +177,7 @@ package body P_Window_ModifierInfosGroupe is
 		to_ada_type((Get_String(modele_groupe, rang_groupe, 0)), groupe.Nom_Groupe);
 		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entryNomContact)), groupe.Nom_Contact);
 		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entryCoordsContact)), groupe.Coord_Contact);
-		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entryAdresseSite)), groupe.Adr_Site);
+		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entrySiteWeb)), groupe.Adr_Site);
 		if get_active(radiobuttonHard) then
 			groupe.Genre := hard;
 		elsif get_active(radiobuttonFusion) then
