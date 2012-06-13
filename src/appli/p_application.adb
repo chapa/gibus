@@ -15,7 +15,7 @@ with ada.containers;
 
 package body p_application is
 
-	function parseVille(str : in String) return String is
+	function parseChaineNom(str : in String) return String is
 		newStr : string(str'range);
 		function min(c : in Character) return Character is
 		begin
@@ -37,13 +37,28 @@ package body p_application is
 		for i in str'range loop
 			if str(i) = ' ' then
 				newStr(i) := '-';
+			elsif str(i) = ''' then
+				newStr(i) := '_';
 			else
 				newStr(i) := min(str(i));
 			end if;
 		end loop;
 		newStr(str'first) := maj(str(str'first));
 		return newStr;
-	end parseVille;
+	end parseChaineNom;
+
+	function parseChaineAp(str : in String) return String is
+		newStr : string(str'range);
+	begin
+		for i in str'range loop
+			if str(i) = ''' then
+				newStr(i) := '_';
+			else
+				newStr(i) := str(i);
+			end if;
+		end loop;
+		return newStr;
+	end parseChaineAp;
 
 	----
 	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
@@ -122,8 +137,8 @@ package body p_application is
 			-- recherche des groupes inscrits au festival de la ville
 			ensGroupesInscrits := festival_io.Retrieve_Associated_Participant_Festivals(fest);
 
-			-- n1 : nombre de groupes programmés total sur les 2 jours
-			n1 := integer(programme_jour_festival_io.card (ensProg1)) + integer(programme_jour_festival_io.card(ensProg2));
+			-- n1 : nombre de groupes prévus sur les 2 jours
+			consulter_nbConcertsPrevus(fest.Ville_Festival, n1);
 
 			--n2 : nombre de groupes inscrits
 			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
@@ -460,14 +475,14 @@ package body p_application is
 			-- recherche des groupes inscrits au festival de la ville
 			ensGroupesInscrits := festival_io.Retrieve_Associated_Participant_Festivals(fest);
 
-			-- n1 : nombre de groupes programmés total sur les 2 jours
-			n1 := integer(programme_jour_festival_io.card (ensProg1)) + integer(programme_jour_festival_io.card(ensProg2));
+			-- n1 : nombre de groupes prévus sur les 2 jours
+			consulter_nbConcertsPrevus(fest.Ville_Festival, n1);
 
 			--n2 : nombre de groupes inscrits
 			n2 :=  integer(participant_festival_io.card(ensGroupesInscrits));
 
 			-- teste si le festival n'est pas entièrement programmé et ajoute la ville dans ensV (s'il y a des groupes)
-			if n1 < n2 and (n2-n1) > 0 then
+			if n2 > 0 AND n1 > n2 then
 				ville.nom_ville := fest.ville_festival;
 				Ville_List.append (ensVP, ville);
 			end if;

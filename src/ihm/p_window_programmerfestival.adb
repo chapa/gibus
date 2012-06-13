@@ -177,9 +177,6 @@ package body P_Window_ProgrammerFestival is
 			p_application.retrouver_groupes_ville_journee(ville.Nom_Ville, groupes_j1, 1);
 			p_application.retrouver_groupes_ville_journee(ville.Nom_Ville, groupes_j2, 2);
 			p_application.retrouver_nbgroupes_journees(ville.nom_ville, nbGroupesJ1, nbGroupesJ2);
-			if nbGroupes = 0 then
-				rep := Message_Dialog("Il n'y a pas de groupes encore inscrits pour ce festival (normalement impossible)");
-			end if;
 
 			clear(modele_liste_groupe);
 			Participant_Festival_List.iterate(groupes, alimente_groupe'Access);

@@ -5,7 +5,8 @@ with ada.Calendar;
 with base_types;
 package  p_application is
 
-	function parseVille(str : in String) return String;
+	function parseChaineNom(str : in String) return String;
+	function parseChaineAp(str : in String) return String;
 
 	-- vidage des données de la base
 	procedure vider_tables ;

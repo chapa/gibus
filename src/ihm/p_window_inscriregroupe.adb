@@ -222,10 +222,10 @@ package body P_Window_InscrireGroupe is
 		end errorBoxGroupeExiste;
 	begin
 		p_conversion.to_ada_type(Get_String(modele_ville, rang_ville, 0), ville.nom_ville);
-		p_conversion.to_ada_type(get_text(entryNomGroupe), groupe.Nom_Groupe);
-		p_conversion.to_ada_type(get_text(entryNomContact), groupe.Nom_Contact);
-		p_conversion.to_ada_type(get_text(entryCoordsContact), groupe.Coord_Contact);
-		p_conversion.to_ada_type(get_text(entryAdresseSite), groupe.Adr_Site);
+		p_conversion.to_ada_type(p_application.parseChaineNom(get_text(entryNomGroupe)), groupe.Nom_Groupe);
+		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entryNomContact)), groupe.Nom_Contact);
+		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entryCoordsContact)), groupe.Coord_Contact);
+		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entryAdresseSite)), groupe.Adr_Site);
 		if get_active(radiobuttonHard) then
 			groupe.Genre := hard;
 		elsif get_active(radiobuttonFusion) then
