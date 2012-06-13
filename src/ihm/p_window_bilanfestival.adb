@@ -33,7 +33,6 @@ package p_enumGenre is new p_conversion.p_enum(tgenre_enum);
 	procedure alimente_ville(pos : festival_List.Cursor) is
 		ville : based108_data.tfestival;
 	begin
-		ecrire("hello");
 		ville := festival_List.element(pos);
 		append(modele_ville, rang_ville, Null_Iter); -- rajoute une ligne vide
 		-- et met dans la colonne 1 de cette ligne le nom de la ville
