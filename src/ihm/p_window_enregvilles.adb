@@ -19,6 +19,9 @@ with p_conversion; use p_conversion; -- utilitaire de conversion
 with based108_data; use based108_data; -- types Ada
 with p_application; use p_application; -- couche application
 
+with GNAT.Regexp; use GNAT.Regexp;
+with p_esiut; use p_esiut;
+
 package body P_window_enregVilles is
 
 	window : Gtk_Window;
@@ -87,18 +90,19 @@ package body P_window_enregVilles is
 
 	procedure enregVille(widget : access Gtk_Widget_Record'Class) is
 		ville : tville;
-		ExManqueInfos : exception;
+		ExManqueInfos, ExMailNonValide : exception;
 		rep : Message_Dialog_Buttons;
 		
 	begin
-		-- vérification des la présence des infos obligatoires
+		-- vérification des la présence et de la forme des infos obligatoires
 		if empty(get_text(entryNomVille)) OR empty(get_text(entryMelOrga)) then
 			raise ExManqueInfos;
+		elsif not Match(get_text(entryMelOrga), Compile("[a-z0-9._%-]+@[a-z0-9.-]+\.[a-z]+", false, false)) then
+			raise ExMailNonValide;
 		end if;
 		-- affectation de la variable ville
-		p_conversion.to_ada_type(get_text(entryNomVille), ville.nom_ville );
-		p_conversion.to_ada_type(p_application.parseVille(to_string(ville.nom_ville)), ville.nom_ville);
-		p_conversion.to_ada_type(get_text(entryMelOrga), ville.mel_contact);
+		p_conversion.to_ada_type(p_application.parseChaineNom(get_text(entryNomVille)), ville.nom_ville);
+		p_conversion.to_ada_type(p_application.parseChaineAp(get_text(entryMelOrga)), ville.mel_contact);
 		-- lance la prodédure d'enregistrement de la ville dans la base
 		p_application.creer_ville(ville);
 		rep:=Message_Dialog ("La ville est enregistrée");
@@ -109,7 +113,9 @@ package body P_window_enregVilles is
 			when ExvilleExiste => rep:=Message_Dialog ("La ville était déjà enregistrée !");
 				init_fenetre;
 			-- cas où une donnée obligatoire est absente
-			when ExManqueInfos => rep:=Message_Dialog ("les nom et mel d'organisateur sont obligatoires");
+			when ExManqueInfos => rep:=Message_Dialog ("Les nom et mel d'organisateur sont obligatoires");
+			-- cas où l'adresse mail n'est pas valide
+			when ExMailNonValide => rep:=Message_Dialog ("L'adresse email n'est pas valide");
 			-- cas d'une erreur de type dans les données
 			when Exconversion => return;
 	end enregVille;

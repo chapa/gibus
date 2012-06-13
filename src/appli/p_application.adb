@@ -15,7 +15,7 @@ with ada.containers;
 
 package body p_application is
 
-	function parseVille(str : in String) return String is
+	function parseChaineNom(str : in String) return String is
 		newStr : string(str'range);
 		function min(c : in Character) return Character is
 		begin
@@ -37,13 +37,28 @@ package body p_application is
 		for i in str'range loop
 			if str(i) = ' ' then
 				newStr(i) := '-';
+			elsif str(i) = ''' then
+				newStr(i) := '_';
 			else
 				newStr(i) := min(str(i));
 			end if;
 		end loop;
 		newStr(str'first) := maj(str(str'first));
 		return newStr;
-	end parseVille;
+	end parseChaineNom;
+
+	function parseChaineAp(str : in String) return String is
+		newStr : string(str'range);
+	begin
+		for i in str'range loop
+			if str(i) = ''' then
+				newStr(i) := '_';
+			else
+				newStr(i) := str(i);
+			end if;
+		end loop;
+		return newStr;
+	end parseChaineAp;
 
 	----
 	-- AJOUTER UNE DESCRIPTION DE LA PROCÉDURE
