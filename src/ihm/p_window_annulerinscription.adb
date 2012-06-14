@@ -96,9 +96,10 @@ package body p_window_annulerinscription is
 		if rang_groupe = Null_Iter   then
 			raise ExManqueInfos;
 		end if;
-		to_ada_type ((Get_String(modele_groupe, rang_groupe, 0)),groupe.nom_groupe) ;
 
-		
+		to_ada_type ((Get_String(modele_groupe, rang_groupe, 0)),groupe.nom_groupe) ;
+		to_ada_type ((Get_String(modele_groupe, rang_groupe, 1)),groupe.nom_contact) ;
+		desinscrire_groupe(groupe);
 		
 		rep:=Message_Dialog ("Le groupe a été désinscrit");
 

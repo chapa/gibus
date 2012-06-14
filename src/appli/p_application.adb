@@ -323,7 +323,7 @@ package body p_application is
 			
 		begin
 			ville := ville_List.element( pos );
-			ecrire( p_conversion.to_string(ville.nom_ville));
+			ecrire_ligne( p_conversion.to_string(ville.nom_ville));
 			-- test si le festival est entièrement programmé et ajoute la ville dans ensV
 
 			if  festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) then
@@ -577,11 +577,11 @@ package body p_application is
 			participant_festival_io.Add_Gagnant(c,true);
 			participant_festival_io.Add_Festival(c,ville.nom_ville);
 			
-			ecrire("t0");
+			ecrire_ligne("t0");
 			if participant_festival_io.is_empty(participant_festival_io.Retrieve(c)) then
 				
 				Ville_List.append (ensV, ville);
-				ecrire("t2");
+				ecrire_ligne("t2");
 			end if;
 		end verifie_gagne;
 	
@@ -771,6 +771,46 @@ package body p_application is
 			raise ExAucunGroupe;
 		end if;
 	end retrouver_groupe_et_ville;
+	procedure desinscrire_groupe(groupe:in out tgroupe)is
+		c,c2:db_commons.criteria;
+		prog:tprogramme_jour_festival;
+		ensP:Programme_Jour_Festival_List.vector;
+		procedure retrouverBonProgramme (pos :Programme_Jour_Festival_List.cursor)is--retrouve le bon programme parmis deux possible (si final) et decrement le nombre max de groupe pour la journe
+			prog1:tProgramme_Jour_Festival;
+			c1:db_commons.criteria;
+			jfest,jfest1:tJour_Festival;
 
+		begin
+			prog1:=Programme_Jour_Festival_List.element(pos);
+			jfest:=jour_festival_io.retrieve_by_pk(prog1.jour_fest);
+			if jfest.festival=groupe.nom_contact then
+				if p_conversion.to_string(jfest.festival)="Paris_gibus" then
+					jfest.nbre_concert_max:=jfest.nbre_concert_max-1;									
+					jour_festival_io.save(jfest,true);
+				end if;
+				prog:=prog1;
+			end if;
+		end retrouverBonProgramme;
+		procedure decrementerJourFest (pos :Programme_Jour_Festival_List.cursor) is--decrement les ordre de passage pour les groupe passant apres le groupe supprimé
+			prog1:tProgramme_Jour_Festival;
+		begin
+			prog1:=Programme_Jour_Festival_List.element(pos);
+			prog1.passage:=prog1.passage-1;
+			programme_jour_festival_io.save(prog1,true);
+		
+		end decrementerJourFest ;
+	begin
+		participant_festival_io.Add_Nom_Groupe_Inscrit(c,groupe.nom_groupe);--suppression de participant_festival
+		participant_festival_io.Add_Festival(c,groupe.nom_contact);
+		participant_festival_io.delete(c);
+		ensP:=groupe_io.Retrieve_Associated_Programme_Jour_Festivals(groupe);
+		Programme_Jour_Festival_List.iterate(ensP,retrouverBonProgramme'access);
+		programme_jour_festival_io.Add_Jour_Fest(c2,prog.jour_fest);
+		programme_jour_festival_io.Add_Passage(c2,prog.passage,db_commons.gt);
+		ensP:=programme_jour_festival_io.retrieve(c2);
+		Programme_Jour_Festival_List.iterate(ensP,decrementerJourFest'access);
+		programme_jour_festival_io.delete(prog);
+
+	end desinscrire_groupe;
 
 end p_application;

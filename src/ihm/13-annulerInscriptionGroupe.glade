@@ -72,7 +72,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="xalign">0.47999998927116394</property>
-                <signal name="clicked" handler="buttonSupprimer_clicked_cb"/>
+                <signal name="clicked" handler="on_buttonSupprimer_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
