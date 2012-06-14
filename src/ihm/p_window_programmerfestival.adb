@@ -207,7 +207,7 @@ package body P_Window_ProgrammerFestival is
 		end if;
 	end affRegion2;
 
-	procedure ajouterGroupeJ1 is
+	procedure ajouterGroupeJ1(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
 		groupe : tGroupe;
 		nb : integer := 0;
@@ -230,7 +230,7 @@ package body P_Window_ProgrammerFestival is
 		end if;
 	end ajouterGroupeJ1;
 
-	procedure retirerGroupeJ1 is
+	procedure retirerGroupeJ1(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
 		groupe : tGroupe;
 	begin
@@ -245,7 +245,7 @@ package body P_Window_ProgrammerFestival is
 		end if;
 	end retirerGroupeJ1;
 
-	procedure ajouterGroupeJ2 is
+	procedure ajouterGroupeJ2(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
 		groupe : tGroupe;
 		nb : integer := 0;
@@ -268,7 +268,7 @@ package body P_Window_ProgrammerFestival is
 		end if;
 	end ajouterGroupeJ2;
 
-	procedure retirerGroupeJ2 is
+	procedure retirerGroupeJ2(widget : access Gtk_Widget_Record'Class) is
 		rep : Message_Dialog_Buttons;
 		groupe : tGroupe;
 	begin
