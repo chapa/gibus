@@ -106,7 +106,7 @@ package body P_window_creerfestival is
 		fest:tFestival;
 		jourfest1,jourfest2:tJour_Festival;
 		rep : Message_Dialog_Buttons;
-		ExManqueInfos : exception;
+		ExManqueInfos,Exheure : exception;
 	begin
 		Get_Selected(Get_Selection(treeviewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
 		if rang_ville = Null_Iter   oR empty(get_text(entryLieu)) OR empty(get_text(entryDate)) OR empty(get_text(entryPrixPlace)) OR empty(get_text(entryNbGroupe1))OR empty(get_text(entryNbGroupe2))OR empty(get_text(entryHeureDeb1))OR empty(get_text(entryHeureDeb2)) then
@@ -121,6 +121,9 @@ package body P_window_creerfestival is
 		p_conversion.to_ada_type(get_text(entryNbGroupe2), jourfest2.Nbre_Concert_Max );
 		p_conversion.to_ada_type(get_text(entryHeureDeb1), jourfest1.Heure_Debut);
 		p_conversion.to_ada_type(get_text(entryHeureDeb2), jourfest2.Heure_Debut );
+		if jourfest1.Heure_Debut >23 or jourfest1.Heure_Debut<0 or jourfest2.Heure_Debut>23 or jourfest2.Heure_Debut<0 then
+			raise Exheure;
+		end if;
 		jourfest1.Num_Ordre:=1;
 		jourfest2.Num_Ordre:=2;
 		jourfest1.Festival:=fest.Ville_Festival;
@@ -138,7 +141,7 @@ package body P_window_creerfestival is
 			when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
 			-- cas d'une erreur de type dans les donnéess
 			when Exconversion => return;
-	
+			when Exheure => rep:=Message_Dialog ("L'heure doit etre entre 0 et 23h");
 	end enregistrer;
 
 
