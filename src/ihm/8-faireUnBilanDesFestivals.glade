@@ -123,10 +123,11 @@
             <property name="visible">True</property>
             <child>
               <widget class="GtkButton" id="buttonOK">
-                <property name="label" translatable="yes">OK</property>
+                <property name="label" translatable="yes">Fermer</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="yalign">0.47999998927116394</property>
                 <signal name="clicked" handler="on_buttonOK_clicked"/>
               </widget>
               <packing>

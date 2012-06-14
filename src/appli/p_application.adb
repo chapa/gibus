@@ -374,7 +374,7 @@ package body p_application is
 
 	----
 	-- Procédure qui retourne les groupes participants (participants) au festival de la ville de nom nomVille mais qui ne sont pas inscrits dans une journée
-	-- Utilisée dans le CU5 : programmerFestival
+	-- Utilisée dans le CU5 : programmerFestival; CU9 EnregistrerGagnantFestival
 	----
 	procedure retrouver_groupes_ville_sans_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer) is
 		festival : tFestival;
@@ -404,7 +404,10 @@ package body p_application is
 		Participant_Festival_List.iterate(ensParticipants, verifie_participant'Access);
 		nbGroupes := integer(participant_festival_io.card(participants));
 	end retrouver_groupes_ville_sans_journee;
-
+	----
+	--Procédure qui retourne les groupes qui passe dans un festival a une certaine journée
+	--utilise dans CU5:progrmmaer festival;CU9 :enregistrer_gagnant;CU15: modifier_programmation_festival
+	----
 	procedure retrouver_groupes_ville_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; numJournee : in integer) is
 		ensJour : Jour_Festival_List.Vector;
 		idJour : integer;
@@ -425,6 +428,9 @@ package body p_application is
 		ensProgJourFest := programme_jour_festival_io.retrieve(c2);
 		Programme_Jour_Festival_List.iterate(ensProgJourFest, verifie_participant'Access);
 	end retrouver_groupes_ville_journee;
+	----
+	--procedure qui retrouve le nombre de groupe pour chacune des journées
+	----
 
 	procedure retrouver_nbgroupes_journees(nomVille : in Unbounded_String ; nbGroupesJ1, nbGroupesJ2 : out integer) is
 		c : db_commons.Criteria;
@@ -440,7 +446,9 @@ package body p_application is
 			nbGroupesJ2 := 0;
 		end if;
 	end retrouver_nbgroupes_journees;
-
+	----
+	--procedure qui crée un festival avec ces journées
+	---- 
 	procedure creer_festival (fest:in out tFestival;jourfest1,jourfest2:in out tJour_Festival)is
 		
 	begin
@@ -510,7 +518,9 @@ package body p_application is
 			raise ExAucuneVille;
 		end if;
 	end retrouver_villes_sans_programme_avec_groupes;
-
+	----
+	--procedure qui crée un groupe et qui l'associe au festival d'une ville
+	----
 	procedure creer_groupe(groupe : in tGroupe ; nomVille : in Unbounded_String) is
 		participants : tParticipant_Festival;
 	begin
@@ -566,23 +576,16 @@ package body p_application is
 			ville := ville_List.element(pos);
 			participant_festival_io.Add_Gagnant(c,true);
 			participant_festival_io.Add_Festival(c,ville.nom_ville);
-			
-			ecrire_ligne("t0");
 			if participant_festival_io.is_empty(participant_festival_io.Retrieve(c)) then
-				
 				Ville_List.append (ensV, ville);
-				ecrire_ligne("t2");
 			end if;
 		end verifie_gagne;
 	
 	begin
 		
-
-		ville_io.add_nom_ville_to_orderings (c, asc);
-		ensVp := ville_io.retrieve( c );
+		retrouver_villes_avec_programme(ensVP);
 		ville_List.iterate(ensVp,verifie_gagne'Access);
 		
-
 		if ville_io.is_empty(ensV) then raise ExAucuneVille ;end if;
 	end retrouver_villes_sans_gagnant;
 
@@ -764,6 +767,7 @@ package body p_application is
 	procedure desinscrire_groupe(groupe:in out tgroupe)is
 		c,c2:db_commons.criteria;
 		prog:tprogramme_jour_festival;
+		part:tParticipant_Festival;
 		ensP:Programme_Jour_Festival_List.vector;
 		procedure retrouverBonProgramme (pos :Programme_Jour_Festival_List.cursor)is--retrouve le bon programme parmis deux possible (si final) et decrement le nombre max de groupe pour la journe
 			prog1:tProgramme_Jour_Festival;
@@ -773,6 +777,7 @@ package body p_application is
 		begin
 			prog1:=Programme_Jour_Festival_List.element(pos);
 			jfest:=jour_festival_io.retrieve_by_pk(prog1.jour_fest);
+			
 			if jfest.festival=groupe.nom_contact then
 				if p_conversion.to_string(jfest.festival)="Paris_gibus" then
 					jfest.nbre_concert_max:=jfest.nbre_concert_max-1;									
@@ -793,6 +798,7 @@ package body p_application is
 		participant_festival_io.Add_Nom_Groupe_Inscrit(c,groupe.nom_groupe);--suppression de participant_festival
 		participant_festival_io.Add_Festival(c,groupe.nom_contact);
 		participant_festival_io.delete(c);
+
 		ensP:=groupe_io.Retrieve_Associated_Programme_Jour_Festivals(groupe);
 		Programme_Jour_Festival_List.iterate(ensP,retrouverBonProgramme'access);
 		programme_jour_festival_io.Add_Jour_Fest(c2,prog.jour_fest);
@@ -800,6 +806,9 @@ package body p_application is
 		ensP:=programme_jour_festival_io.retrieve(c2);
 		Programme_Jour_Festival_List.iterate(ensP,decrementerJourFest'access);
 		programme_jour_festival_io.delete(prog);
+		if p_conversion.to_string(groupe.nom_contact)/="Paris_gibus" then
+			groupe_io.delete(groupe);
+		end if;
 
 	end desinscrire_groupe;
 

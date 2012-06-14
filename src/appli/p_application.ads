@@ -30,7 +30,7 @@ package  p_application is
 	-- renvoie les programmes des 2 journées du festival de la ville de nom donné
 	-- la ville nomVille a un festival programmé
 	procedure consulter_programme_festival(nomville :  unbounded_string ; fest : out tfestival; ensProg1, ensProg2 : out Programme_Jour_Festival_List.Vector );
-
+	
 	procedure consulter_festival(nomville : in unbounded_string;fest : out tfestival;ville : out tville);
 
 	procedure retrouver_groupes(ensG : out Groupe_List.Vector);
@@ -46,7 +46,10 @@ package  p_application is
 	procedure retrouver_groupes_ville(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer);
 
 	procedure retrouver_groupes_ville_sans_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; nbGroupes : out integer);
-
+	----
+	--Procédure qui retourne les groupes qui passe dans un festival a une certaine journée
+	--utilise dans CU5:progrmmaer festival;CU9 :enregistrer_gagnant;CU15: modifier_programmation_festival
+	----
 	procedure retrouver_groupes_ville_journee(nomVille : in Unbounded_String ; participants : out Participant_Festival_List.Vector ; numJournee : in integer);
 
 	procedure retrouver_nbgroupes_journees(nomVille : in Unbounded_String ; nbGroupesJ1, nbGroupesJ2 : out integer);
