@@ -20,6 +20,7 @@ with p_window_modifierProgrammationFestival; -- (15)
 with p_window_consultergroupepargenre;--(12)
 with p_application;
 with p_conversion;
+with p_window_annulerinscription;
 with p_esiut;use p_esiut;
 
 package body p_window_princ is
@@ -55,6 +56,8 @@ package body p_window_princ is
 		Glade.XML.signal_connect(XML, "on_menuitem_consultGroupe_activate", affiche_win_consultGroupe'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_enregistrerGagnantFestival_activate", affiche_win_enregistrerGagnantFestival'address,null_address);
 		Glade.XML.signal_connect(XML, "on_menuitem_ConsultGroupeParGenre_activate", affiche_win_conultergroupepargenre'address,null_address);
+		Glade.XML.signal_connect(XML, "on_menuitem_desinscrireGroupe_activate", affiche_win_desinscrireGroupe'address,null_address);
+
 	end charge;
 
 	procedure quitter(widget : access Gtk_Widget_Record'Class) is
@@ -164,5 +167,8 @@ package body p_window_princ is
 		p_window_consultergroupepargenre.charge;
 	end affiche_win_conultergroupepargenre;
 
-
+	procedure affiche_win_desinscrireGroupe   (widget : access Gtk_Widget_Record'Class) is
+	begin
+		p_window_annulerinscription.charge;
+	end affiche_win_desinscrireGroupe;
 end p_window_princ;

@@ -107,19 +107,13 @@ package body P_window_enregistrerGagnant is
 		rep : Message_Dialog_Buttons;
 		ExManqueInfos : exception;
 	begin
-		ecrire("h1");
 		Get_Selected(Get_Selection(treeviewGroupes), Gtk_Tree_Model(modele_groupe), rang_groupe);
-		ecrire("h2");
 		Get_Selected(Get_Selection(treeviewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
-		ecrire("h3");
 		if rang_ville = Null_Iter or rang_groupe = Null_Iter   then
 			raise ExManqueInfos;
 		end if;
-		ecrire("h4");
 		to_ada_type ((Get_String(modele_groupe, rang_groupe, 0)),participants.Nom_Groupe_Inscrit) ;
-		ecrire("h5");
 		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),participants.Festival);
-		ecrire("h6");
 		marque_groupe_gagne(participants);
 		if Get_String(modele_ville, rang_ville, 0)/="Paris_gibus" then
 			enregistrer_groupe_final(participants.Nom_Groupe_Inscrit);
@@ -175,7 +169,7 @@ package body P_window_enregistrerGagnant is
 		end if;
 		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),fest.Ville_Festival);
 		retrouver_groupes_ville(fest.Ville_Festival , participants , nbGroupes);
-		if nbGroupes=1 then
+		if nbGroupes=0 then
 			raise ExAucunGroupe;
 		end if;
 		clear (modele_groupe);

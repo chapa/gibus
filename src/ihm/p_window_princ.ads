@@ -28,4 +28,6 @@ package P_window_princ is
 	procedure affiche_win_consultFestivals(widget : access Gtk_Widget_Record'Class);
 	procedure affiche_win_modifierProgrammationFestival(widget : access Gtk_Widget_Record'Class);
 	procedure affiche_win_conultergroupepargenre (widget : access Gtk_Widget_Record'Class) ;
+	procedure affiche_win_desinscrireGroupe   (widget : access Gtk_Widget_Record'Class) ;
+
 end P_window_princ;

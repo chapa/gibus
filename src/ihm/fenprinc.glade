@@ -167,6 +167,14 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkMenuItem" id="menuitem_desinscrireGroupe">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Désinscrire un groupe</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_menuitem_desinscrireGroupe_activate"/>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkSeparatorMenuItem" id="separatormenuitem4">
                         <property name="visible">True</property>
                       </widget>

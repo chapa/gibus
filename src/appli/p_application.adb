@@ -79,7 +79,8 @@ package body p_application is
 		p_conversion.to_ada_type("Paris_gibus",ville.nom_ville);
 		p_conversion.to_ada_type("final@Paris_gibus",ville.Mel_Contact);
 		p_conversion.to_ada_type("Paris_gibus",fest.ville_festival);
-		p_conversion.to_ada_type("Paris_gibus",fest.ville_festival);
+		p_conversion.to_ada_type("19/02/2012",fest.date);
+		p_conversion.to_ada_type("Place de la Concorde",fest.lieu);
 		fest.prix_place:=50;
 		creer_ville(ville);
 		p_conversion.to_ada_type("Paris_gibus",journ1.festival);
@@ -744,4 +745,32 @@ package body p_application is
 			raise ExAucunGroupe;
 		end if;
 	end retrouver_groupes_genre;
+	procedure retrouver_groupe_et_ville(groupes :out Groupe_List.vector)is
+		ensG:groupe_List.vector;
+		c:db_commons.criteria;
+		procedure ajouter_ville(pos :groupe_list.cursor) is	
+			groupe:tgroupe;
+			participant:tParticipant_Festival;
+			ensP:Based108_Data.Participant_Festival_List.Vector;
+		begin
+			groupe:=groupe_list.element(pos);
+			ensP :=groupe_io.Retrieve_Associated_Participant_Festivals(groupe);
+			if integer(Participant_Festival_io.card(ensP))=2 then --si le groupe est programmé dans deux festival
+				p_conversion.to_ada_type("Paris_gibus",groupe.nom_contact);
+				groupe_list.append(groupes,groupe);
+			elsif integer(Participant_Festival_io.card(ensP))=1 then --si le groupe est programme dans un seul festival
+				participant:=Participant_Festival_List.element(ensP, Participant_Festival_List.first_index(ensP));
+				groupe.nom_contact:=participant.festival;
+				groupe_list.append(groupes,groupe);
+			end if;
+		end ajouter_ville;
+	begin
+		ensG:=groupe_io.retrieve(c);
+		groupe_list.iterate(ensG,ajouter_ville'Access);
+		if groupe_io.is_empty(groupes) then
+			raise ExAucunGroupe;
+		end if;
+	end retrouver_groupe_et_ville;
+
+
 end p_application;
