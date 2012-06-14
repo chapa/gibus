@@ -198,7 +198,7 @@
                     <child>
                       <widget class="GtkMenuItem" id="menuitem_ConsultGroupeParGenre">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Conulter les groupes par genres</property>
+                        <property name="label" translatable="yes">Consulter les groupes par genres</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_menuitem_ConsultGroupeParGenre_activate"/>
                       </widget>

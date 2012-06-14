@@ -6,7 +6,7 @@
     <property name="width_request">351</property>
     <property name="height_request">167</property>
     <property name="visible">True</property>
-    <property name="title" translatable="yes">annuler l'inscription d'un groupe</property>
+    <property name="title" translatable="yes">Annuler l'inscription d'un groupe</property>
     <property name="modal">True</property>
     <property name="window_position">mouse</property>
     <property name="type_hint">notification</property>
