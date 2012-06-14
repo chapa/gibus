@@ -227,7 +227,7 @@ package body P_Window_ProgrammerFestival is
 		while rang_journee1 /= Null_Iter loop
 			nb := nb + 1;
 			Next(modele_journee1, rang_journee1);
-		end loop
+		end loop;
 
 		Get_Selected(Get_Selection(treeviewListeGroupes), Gtk_Tree_Model(modele_liste_groupe), rang_liste_groupe);
 		if rang_liste_groupe = Null_Iter then 
