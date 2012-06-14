@@ -21,6 +21,8 @@ with base_types; use base_types;  -- types énumérés
 with Ada.Calendar;use Ada.Calendar;  -- type date
 with p_application; use p_application;  -- couche application
 
+with p_esiut; use p_esiut;
+
 package body P_Window_ProgrammerFestival is
 
 	window : Gtk_Window;
@@ -290,18 +292,18 @@ package body P_Window_ProgrammerFestival is
 		i : integer := 1;
 	begin
 		to_ada_type((Get_String(modele_ville, rang_ville, 0)), ville.Nom_Ville);
-		to_ada_type(Get_String(modele_journee1, rang_journee1, 0), groupe.Nom_Groupe);
 		p_application.vider_journees(ville.Nom_Ville);
 		rang_journee1 := Get_Iter_First(modele_journee1);
 		while rang_journee1 /= Null_Iter loop
+			to_ada_type(Get_String(modele_journee1, rang_journee1, 0), groupe.Nom_Groupe);
 			p_application.creer_groupe_journee(ville.Nom_Ville, groupe.Nom_Groupe, 1, i);
 			Next(modele_journee1, rang_journee1);
 			i := i + 1;
 		end loop;
 		i := 1;
-		to_ada_type(Get_String(modele_journee2, rang_journee2, 0), groupe.Nom_Groupe);
 		rang_journee2 := Get_Iter_First(modele_journee2);
 		while rang_journee2 /= Null_Iter loop
+			to_ada_type(Get_String(modele_journee2, rang_journee2, 0), groupe.Nom_Groupe);
 			p_application.creer_groupe_journee(ville.Nom_Ville, groupe.Nom_Groupe, 2, i);
 			Next(modele_journee2, rang_journee2);
 			i := i + 1;
