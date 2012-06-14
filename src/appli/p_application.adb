@@ -537,34 +537,24 @@ package body p_application is
 		programme_jour_festival_io.delete(c2);
 	end vider_journees;
 
-	procedure creer_groupe_journee(nomGroupe : in String ; numJournee, numOrdre : in integer) is
+	procedure creer_groupe_journee(nomVille, nomGroupe : in Unbounded_String ; numJournee, numOrdre : in integer) is
 		prog : tProgramme_Jour_Festival;
-		nomG : Unbounded_String;
 		jours_festival : Jour_Festival_List.Vector;
-		groupe : tGroupe;
-		participant : Participant_Festival_List.Vector;
 		c : db_commons.Criteria;
-		nomVille : unbounded_string;
 	begin
-		p_conversion.to_ada_type(nomGroupe, nomG);
-		groupe := groupe_io.retrieve_by_pk(nomG);
-		participant := groupe_io.Retrieve_Associated_Participant_Festivals(groupe);
-		nomVille := Participant_Festival_List.element(participant, Participant_Festival_List.first_index(participant)).festival;
-
 		jour_festival_io.Add_Festival(c, nomVille);
 		jour_festival_io.Add_Num_Ordre(c, numJournee);
 		jours_festival := jour_festival_io.retrieve(c);
 
-		p_conversion.to_ada_type(nomGroupe, nomG);
-		prog := (nomG, Jour_Festival_List.element(jours_festival, Jour_Festival_List.first_index(jours_festival)).Id_Jour_Festival, numOrdre);
+		prog := (nomGroupe, Jour_Festival_List.element(jours_festival, Jour_Festival_List.first_index(jours_festival)).Id_Jour_Festival, numOrdre);
 		programme_jour_festival_io.save(prog, false);
 	end creer_groupe_journee;
+
 	procedure marque_groupe_gagne(participant : in out tParticipant_Festival )is
 	begin
 		participant.gagnant:=true;
 		participant_festival_io.save(participant,true);
 	end marque_groupe_gagne;
-
 
 	procedure retrouver_villes_sans_gagnant (ensV : out based108_data.Ville_List.Vector) is
 		c : db_commons.Criteria;

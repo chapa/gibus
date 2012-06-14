@@ -63,7 +63,7 @@ package  p_application is
 
 	procedure vider_journees(nomVille : in Unbounded_String);
 
-	procedure creer_groupe_journee(nomGroupe : in String ; numJournee, numOrdre : in integer);
+	procedure creer_groupe_journee(nomVille, nomGroupe : in Unbounded_String ; numJournee, numOrdre : in integer);
 
 	procedure marque_groupe_gagne(participant : in out  tParticipant_Festival );
 
