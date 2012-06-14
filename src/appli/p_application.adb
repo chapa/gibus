@@ -535,7 +535,9 @@ package body p_application is
 	begin
 		festival := festival_io.retrieve_by_pk(festival.Ville_Festival);
 	end consulter_journee_festival;
-
+	----
+	--vide les journées d'une ville
+	----
 	procedure vider_journees(nomVille : in Unbounded_String) is
 		jours_festival : Jour_Festival_List.Vector;
 		c, c2 : db_commons.Criteria;
@@ -546,7 +548,9 @@ package body p_application is
 		programme_jour_festival_io.Add_Jour_Fest(c2, Jour_Festival_List.element(jours_festival, Jour_Festival_List.last_index(jours_festival)).Id_Jour_Festival, db_commons.eq, db_commons.join_or);
 		programme_jour_festival_io.delete(c2);
 	end vider_journees;
-
+	----
+	--crée une ascocie un groupe a une journe d'un festival
+	----
 	procedure creer_groupe_journee(nomVille, nomGroupe : in Unbounded_String ; numJournee, numOrdre : in integer) is
 		prog : tProgramme_Jour_Festival;
 		jours_festival : Jour_Festival_List.Vector;
@@ -559,13 +563,17 @@ package body p_application is
 		prog := (nomGroupe, Jour_Festival_List.element(jours_festival, Jour_Festival_List.first_index(jours_festival)).Id_Jour_Festival, numOrdre);
 		programme_jour_festival_io.save(prog, false);
 	end creer_groupe_journee;
-
+	----
+	--marque le groupe comme le gagnant d'un festival
+	----
 	procedure marque_groupe_gagne(participant : in out tParticipant_Festival )is
 	begin
 		participant.gagnant:=true;
 		participant_festival_io.save(participant,true);
 	end marque_groupe_gagne;
-
+	----
+	--retrouve les villes ou il n'y a pas de gagnant de le festival ascocier
+	---- 
 	procedure retrouver_villes_sans_gagnant (ensV : out based108_data.Ville_List.Vector) is
 		c : db_commons.Criteria;
 		ensVP :  based108_data.Ville_List.Vector;
@@ -588,7 +596,9 @@ package body p_application is
 		
 		if ville_io.is_empty(ensV) then raise ExAucuneVille ;end if;
 	end retrouver_villes_sans_gagnant;
-
+	----
+	--retouve les finaliste(participant au festival Paris_gibus)
+	----
 	procedure retrouver_finalistes(groupes : out Groupe_List.vector ; villes : out Ville_List.vector) is
 		ens_participant : Participant_Festival_List.Vector;
 		c : db_commons.Criteria;
@@ -614,7 +624,9 @@ package body p_application is
 	begin
 		groupe_io.save(groupe, true);
 	end modifier_groupe;
-
+	----
+	--retrouve tous les festivals
+	----
 	procedure retrouver_festivals(festivals : out Festival_List.vector) is
 		c : db_commons.Criteria;
 	begin
@@ -624,6 +636,9 @@ package body p_application is
 			raise ExAucunFestival;
 		end if;
 	end retrouver_festivals;
+	----
+	--retourne le nombre de groupe par genre
+	----
 	procedure nb_groupe_par_genre(genre:in base_types.tgenre_Enum ;nombre:out integer) is
 		c:db_commons.criteria;
 	begin
@@ -639,6 +654,9 @@ package body p_application is
 		
 	
 	end nb_groupe ;
+	----
+	--retourne les villes avec pour chaque ville le nombre de groupes corespondant
+	----
 	procedure nb_groupe_par_ville(ensG: out based108_data.festival_List.Vector) is
 		c:db_commons.criteria;
 		ensVP:based108_data.Ville_List.Vector;
@@ -668,7 +686,9 @@ package body p_application is
 			raise ExAucuneVille;
 		end if;
 	end nb_groupe_par_ville;
-
+	----
+	--enregistre un groupe au festival Paris_gibus et augmente le nombre de concert prévus dans l'une des deux journée
+	----
 
 	procedure enregistrer_groupe_final(nomgroupe:in Unbounded_String )is 
 		part:tParticipant_Festival;
@@ -710,6 +730,9 @@ package body p_application is
 		jour_festival_io.save(j1,true);
 		jour_festival_io.save(j2,true);
 	end enregistrer_groupe_final;
+	----
+	--retrouve les groupes pour un genre donné
+	----
 	procedure retrouver_groupes_genre (genre:in base_types.tgenre_Enum;groupes :out Groupe_List.vector) is
 		c:db_commons.criteria;
 		ensG:Based108_Data.groupe_List.Vector;
@@ -738,6 +761,9 @@ package body p_application is
 			raise ExAucunGroupe;
 		end if;
 	end retrouver_groupes_genre;
+	----
+	--retrouve le groupe et la ville associer si le groupe est programmé a Paris_gibus alors ville = Paris_gibus
+	----
 	procedure retrouver_groupe_et_ville(groupes :out Groupe_List.vector)is
 		ensG:groupe_List.vector;
 		c:db_commons.criteria;
@@ -764,6 +790,12 @@ package body p_application is
 			raise ExAucunGroupe;
 		end if;
 	end retrouver_groupe_et_ville;
+
+	----
+	--desinscrit un groupe d'un festival:
+		--si le festival= Paris_gibus alors il le désinscrit
+		--si le festival n'est pas paris gibus alors il supprime aussi le groupe
+	----
 	procedure desinscrire_groupe(groupe:in out tgroupe)is
 		c,c2:db_commons.criteria;
 		prog:tprogramme_jour_festival;

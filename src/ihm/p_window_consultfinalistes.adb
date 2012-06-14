@@ -73,9 +73,9 @@ package body P_Window_ConsultFinalistes is
 		Glade.XML.signal_connect(XML, "on_buttonFermer_clicked", ferme'address,null_address);
 
 		-- creation pour la vue treeviewGroupesFinalistes des colonne et du modele associé
-		p_util_treeview.creerColonne("nomGroupe ", treeviewGroupesFinalistes, false);
-		p_util_treeview.creerColonne("nomVille ", treeviewGroupesFinalistes, false);
-		p_util_treeview.creerColonne("genre ", treeviewGroupesFinalistes, false);
+		p_util_treeview.creerColonne("Groupe ", treeviewGroupesFinalistes, true);
+		p_util_treeview.creerColonne("Ville ", treeviewGroupesFinalistes, true);
+		p_util_treeview.creerColonne("Genre ", treeviewGroupesFinalistes, true);
 		creerModele(treeviewGroupesFinalistes, modele_groupe);
 
 		init_fenetre;
