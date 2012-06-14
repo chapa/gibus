@@ -1,3 +1,10 @@
+
+--------------------------
+--auteur:Vincent
+--------------------------
+
+
+
 with Glade.XML;use Glade.XML;
 with System; use System; -- module permettant l'interaction avec la boucle événementielle principale
 with Gtk.Main; -- pour les boites de dialogue
@@ -34,36 +41,21 @@ package body P_window_creerfestival is
 		Set (modele_ville, rang_ville, 0, p_conversion.to_string(ville.nom_ville));
 	end alimente_ville;
 
-	
-
-
 	-- (ré)initialise la fenêtre avec la liste des villes enregistrées ou un message
 	procedure init_fenetre is
 		ens_ville : based108_data.ville_List.Vector;
 		rep : Message_Dialog_Buttons;
 	begin
 		p_application.retrouver_ville_sans_festival(ens_ville);
-		clear (modele_ville);
-		--delete_text(entryNomVille); delete_text(entryMelOrga);
-		-- alimentation du modèle avec les noms de villes
-		ville_List.iterate(ens_ville ,alimente_ville'Access);
-
+		clear (modele_ville);--efface la treeview
+		ville_List.iterate(ens_ville ,alimente_ville'Access);-- alimentation du modèle avec les noms de villes
 		exception
-			when exAucuneVille => append (modele_ville, rang_ville, Null_Iter);
-			-- rajoute une ligne vide
-			-- et met dans la colonne 1 de cette ligne le message
-			
-			rep:=Message_Dialog ("aucune ville sans festival programmée");destroy(window);
+			when exAucuneVille => rep:=Message_Dialog ("aucune ville sans festival programmée");destroy(window);
 	end init_fenetre;
-
-
-
-
 
 	procedure charge is
 		XML : Glade_XML;
 	begin
-		
 		Glade.XML.Gtk_New(XML, "src/ihm/2-creerFestival.glade");
 		window := Gtk_Window(Get_Widget(XML, "windowCreerFestival"));
 
@@ -85,7 +77,6 @@ package body P_window_creerfestival is
 		entryHeureDeb2 := Gtk_GEntry(Get_Widget(XML, "entryHeureDeb2"));
 		treeviewVilles := Gtk_Tree_View(Get_Widget(XML, "treeviewVilles"));
 
-
 		Glade.XML.signal_connect(XML, "on_buttonAnnuler1_clicked", ferme'address,null_address);
 		Glade.XML.signal_connect(XML, "on_buttonAnnuler2_clicked", affRegion1'address,null_address);
 
@@ -99,6 +90,7 @@ package body P_window_creerfestival is
 
 	procedure ferme (widget : access Gtk_Widget_Record'Class) is
 	begin
+		--ferme la fenetre
 		destroy (window);
 	end ferme ;
 	
@@ -108,12 +100,14 @@ package body P_window_creerfestival is
 		rep : Message_Dialog_Buttons;
 		ExManqueInfos,Exheure : exception;
 	begin
+		--verifie si toutes les infos sont entrées
 		Get_Selected(Get_Selection(treeviewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
 		if rang_ville = Null_Iter   oR empty(get_text(entryLieu)) OR empty(get_text(entryDate)) OR empty(get_text(entryPrixPlace)) OR empty(get_text(entryNbGroupe1))OR empty(get_text(entryNbGroupe2))OR empty(get_text(entryHeureDeb1))OR empty(get_text(entryHeureDeb2)) then
 			raise ExManqueInfos;
 		end if;
 		to_ada_type ((Get_String(modele_ville, rang_ville, 0)),fest.Ville_Festival) ;
 
+		--recupere toutes les informations de l'ihm
 		p_conversion.to_ada_type(get_text(entryLieu), fest.Lieu );
 		p_conversion.to_ada_type(get_text(entryDate), fest.Date);
 		p_conversion.to_ada_type(get_text(entryPrixPlace), fest.prix_place );
@@ -121,9 +115,10 @@ package body P_window_creerfestival is
 		p_conversion.to_ada_type(get_text(entryNbGroupe2), jourfest2.Nbre_Concert_Max );
 		p_conversion.to_ada_type(get_text(entryHeureDeb1), jourfest1.Heure_Debut);
 		p_conversion.to_ada_type(get_text(entryHeureDeb2), jourfest2.Heure_Debut );
-		if jourfest1.Heure_Debut >23 or jourfest1.Heure_Debut<0 or jourfest2.Heure_Debut>23 or jourfest2.Heure_Debut<0 then
+		if jourfest1.Heure_Debut >23 or jourfest1.Heure_Debut<0 or jourfest2.Heure_Debut>23 or jourfest2.Heure_Debut<0 then --verifie si l'heure est compris entre 0 et 23
 			raise Exheure;
 		end if;
+		--entre les information pour crée 2 nouvelles journée
 		jourfest1.Num_Ordre:=1;
 		jourfest2.Num_Ordre:=2;
 		jourfest1.Festival:=fest.Ville_Festival;
@@ -144,11 +139,9 @@ package body P_window_creerfestival is
 			when Exheure => rep:=Message_Dialog ("L'heure doit etre entre 0 et 23h");
 	end enregistrer;
 
-
-	
-	procedure affRegion1(widget : access Gtk_Widget_Record'Class)is
-	ExManqueInfos :exception;
-	rep: Message_Dialog_Buttons;
+	procedure affRegion1(widget : access Gtk_Widget_Record'Class)is		--degrise la region1 et grise la region 2
+		ExManqueInfos :exception;
+		rep: Message_Dialog_Buttons;
 	begin
 		set_sensitive(butAnnuler1, true);
 		set_sensitive(butEnregistrer1, true);
@@ -170,28 +163,25 @@ package body P_window_creerfestival is
 		set_sensitive(treeviewVilles, true);
 		exception
 		when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
-
 	end affRegion1;
-	procedure affRegion2(widget : access Gtk_Widget_Record'Class)is
+
+	procedure affRegion2(widget : access Gtk_Widget_Record'Class)is--grise la region1 et degrise la region 2
 		fest:tFestival;
 		rep: Message_Dialog_Buttons;
 		ExManqueInfos :exception;
-		
 	begin
+		--verifie que les informations attendu sont entré et leurs cohérences
 		Get_Selected(Get_Selection(treeviewVilles), Gtk_Tree_Model(modele_ville), rang_ville);
 		if rang_ville = Null_Iter   OR empty(get_text(entryLieu)) OR empty(get_text(entryDate)) OR empty(get_text(entryPrixPlace)) then
 			raise ExManqueInfos;
 			
 		end if;
-		
-		
 	 	p_conversion.to_ada_type(get_text(entryDate), fest.Date );
 	 	p_conversion.to_ada_type(get_text(entryPrixPlace), fest.prix_place );
 	 	p_conversion.to_ada_type(get_text(entryLieu), fest.lieu );
 		set_text(entryJournee1,p_conversion.to_string(fest.Date));
 		set_text(entryJournee2,p_conversion.to_string(fest.Date + 86400.0));
-		
-		
+	
 		set_sensitive(butAnnuler1, false);
 		set_sensitive(butEnregistrer1, false);
 		set_sensitive(butAnnuler2, true);
@@ -215,9 +205,6 @@ package body P_window_creerfestival is
 			when ExManqueInfos => rep:=Message_Dialog ("Informations manquantes");
 			when Exconversion => return;
 			when ADA.CALENDAR.TIME_ERROR => rep:=Message_Dialog ("Date incorrect");
-	
-
 	end affRegion2;
-	
 
 end P_window_creerfestival;

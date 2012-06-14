@@ -1,3 +1,6 @@
+--------------------------
+--auteur:Vincent
+--------------------------
 with Glade.XML;use Glade.XML;
 with System; use System; -- module permettant l'interaction avec la boucle événementielle principale
 with Gtk.Main; -- pour les boites de dialogue
