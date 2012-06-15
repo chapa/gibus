@@ -88,12 +88,10 @@ package  p_application is
 
 	procedure retrouver_groupes_genre (genre:in base_types.tgenre_Enum;groupes :out Groupe_List.vector);
 
-	procedure retrouver_groupe_et_ville(groupes :out Groupe_List.vector);
-
 	procedure desinscrire_groupe(groupe:in out tgroupe);
 
 	procedure ajouter_Paris_gibus_nbgroupe;
-	
+	procedure retrouver_groupe_et_villes(groupes :out Groupe_List.vector);
 	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste, ExAucunFestival : exception;
 
 end p_application; 

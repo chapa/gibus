@@ -772,33 +772,40 @@ package body p_application is
 	----
 	--retrouve le groupe et la ville associer si le groupe est programmé a Paris_gibus alors ville = Paris_gibus
 	----
-	procedure retrouver_groupe_et_ville(groupes :out Groupe_List.vector)is
+
+	procedure retrouver_groupe_et_villes(groupes :out Groupe_List.vector)is
 		ensG:groupe_List.vector;
 		c:db_commons.criteria;
-		procedure ajouter_ville(pos :groupe_list.cursor) is	
-			groupe:tgroupe;
+		ensv:ville_List.vector;
+
+		procedure trouver_groupe(pos :ville_list.cursor) is	
 			participant:tParticipant_Festival;
-			ensP:Based108_Data.Participant_Festival_List.Vector;
+			ville:tville;
+			ensP:Participant_Festival_List.Vector;
+			nbGroupes:integer;
+			procedure ajouter_groupe (pos1 :Participant_Festival_List.cursor)is
+				part:tParticipant_Festival;
+				groupe:tGroupe;
+			begin
+				part:=Participant_Festival_List.element(pos1);
+				groupe.nom_contact:=part.festival;
+				groupe.nom_groupe:=part.nom_groupe_inscrit;
+				groupe_list.append(groupes,groupe);
+			end ajouter_groupe ;
 		begin
-			groupe:=groupe_list.element(pos);
-			ensP :=groupe_io.Retrieve_Associated_Participant_Festivals(groupe);
-			if integer(Participant_Festival_io.card(ensP))=2 then --si le groupe est programmé dans deux festival
-				p_conversion.to_ada_type("Paris_gibus",groupe.nom_contact);
-				groupe_list.append(groupes,groupe);
-			elsif integer(Participant_Festival_io.card(ensP))=1 then --si le groupe est programme dans un seul festival
-				participant:=Participant_Festival_List.element(ensP, Participant_Festival_List.first_index(ensP));
-				groupe.nom_contact:=participant.festival;
-				groupe_list.append(groupes,groupe);
-			end if;
-		end ajouter_ville;
+			ville:=ville_list.element(pos);
+			retrouver_groupes_ville(Ville.nom_ville,ensP,nbGroupes);
+			Participant_Festival_List.iterate(ensP,ajouter_groupe'access);
+		end trouver_groupe;
 	begin
-		ensG:=groupe_io.retrieve(c);
-		groupe_list.iterate(ensG,ajouter_ville'Access);
+		retrouver_villes_sans_gagnant(ensV);
+		
+		ville_list.iterate(ensV,trouver_groupe'Access);
 		if groupe_io.is_empty(groupes) then
 			raise ExAucunGroupe;
 		end if;
-	end retrouver_groupe_et_ville;
-
+	end retrouver_groupe_et_villes;
+	
 	----
 	--desinscrit un groupe d'un festival:
 		--si le festival= Paris_gibus alors il le désinscrit

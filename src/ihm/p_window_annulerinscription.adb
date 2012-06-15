@@ -45,12 +45,13 @@ package body p_window_annulerinscription is
 		ens_groupe : based108_data.groupe_List.Vector;
 		rep : Message_Dialog_Buttons;
 	begin
-		retrouver_groupe_et_ville(ens_groupe);
+		retrouver_groupe_et_villes(ens_groupe);
 		clear (modele_groupe);
 		groupe_List.iterate(ens_groupe ,alimente_groupe'Access);
 
 		exception
 			when exAucunGroupe => rep:=Message_Dialog ("Aucun groupe existant");destroy(window);
+			when exAucuneVille => rep:=Message_Dialog ("Aucune ville");destroy(window);
 			-- rajoute une ligne vide
 			-- et met dans la colonne 1 de cette ligne le message
 			

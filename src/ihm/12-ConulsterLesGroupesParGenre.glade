@@ -5,6 +5,7 @@
   <widget class="GtkWindow" id="windowConsulterGroupe">
     <property name="visible">True</property>
     <property name="title" translatable="yes">Consulter les groupes par genre</property>
+    <property name="modal">True</property>
     <property name="window_position">mouse</property>
     <child>
       <widget class="GtkVBox" id="vbox1">
