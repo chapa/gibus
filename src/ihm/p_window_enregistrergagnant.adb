@@ -56,11 +56,7 @@ package body P_window_enregistrerGagnant is
 		ville_List.iterate(ens_ville ,alimente_ville'Access);
 		
 	exception
-		when exAucuneVille => append (modele_ville, rang_ville, Null_Iter);
-		-- rajoute une ligne vide
-		-- et met dans la colonne 1 de cette ligne le message
-	
-		rep:=Message_Dialog ("Aucune ville sans gagnant");destroy(window);
+		when exAucuneVille => rep:=Message_Dialog ("Aucune ville sans gagnant");destroy(window);
 	end init_fenetre;
 
 
@@ -79,7 +75,6 @@ package body P_window_enregistrerGagnant is
 		butEnregistrer := Gtk_button(Get_Widget(XML, "buttonEnregistrer"));
 		butSelectionner := Gtk_button(Get_Widget(XML, "buttonSelectionner"));
 
-		
 		treeviewVilles := Gtk_Tree_View(Get_Widget(XML, "treeviewville"));
 		treeviewGroupes := Gtk_Tree_View(Get_Widget(XML, "treeviewGroupes"));
 

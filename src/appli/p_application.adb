@@ -293,7 +293,7 @@ package body p_application is
 			ville := ville_List.element( pos );
 			nbGroupes := integer(participant_festival_io.card(festival_io.Retrieve_Associated_Participant_Festivals(festival_io.Retrieve_by_pk(ville.nom_ville))));
 			consulter_nbConcertsPrevus(ville.nom_ville, nbConcertsPrevus);
-			if not festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) AND nbConcertsPrevus - nbGroupes > 0 then
+			if not festival_io.Is_Null(festival_io.retrieve_by_pk(ville.nom_ville)) AND nbConcertsPrevus - nbGroupes > 0 and p_conversion.to_string(ville.nom_ville)/="Paris_gibus" then
 				ville_list.append (ensVF, ville);
 			end if;
 		end verifie_festival;
@@ -459,7 +459,9 @@ package body p_application is
 		jourfest2.Id_Jour_Festival:=Jour_Festival_io.Next_Free_Id_Jour_Festival;
 		
 		Jour_Festival_io.save(jourfest2,False);
-		
+		if p_conversion.to_string(fest.ville_festival)/="Paris_gibus" then
+			ajouter_Paris_gibus_nbgroupe;
+		end if;
 	end creer_festival;
 
 	----
@@ -572,19 +574,19 @@ package body p_application is
 		participant_festival_io.save(participant,true);
 	end marque_groupe_gagne;
 	----
-	--retrouve les villes ou il n'y a pas de gagnant de le festival ascocier
+	--retrouve les villes ou il n'y a pas de gagnant pour festival ascocier
 	---- 
 	procedure retrouver_villes_sans_gagnant (ensV : out based108_data.Ville_List.Vector) is
 		c : db_commons.Criteria;
 		ensVP :  based108_data.Ville_List.Vector;
 		procedure verifie_gagne(pos : ville_List.cursor) is
 			ville : tville;
-			c : db_commons.Criteria;
+			c1 : db_commons.Criteria;
 		begin
 			ville := ville_List.element(pos);
-			participant_festival_io.Add_Gagnant(c,true);
-			participant_festival_io.Add_Festival(c,ville.nom_ville);
-			if participant_festival_io.is_empty(participant_festival_io.Retrieve(c)) then
+			participant_festival_io.Add_Gagnant(c1,true);
+			participant_festival_io.Add_Festival(c1,ville.nom_ville);
+			if participant_festival_io.is_empty(participant_festival_io.Retrieve(c1)) then
 				Ville_List.append (ensV, ville);
 			end if;
 		end verifie_gagne;
@@ -689,9 +691,7 @@ package body p_application is
 	----
 	--enregistre un groupe au festival Paris_gibus et augmente le nombre de concert prévus dans l'une des deux journée
 	----
-
-	procedure enregistrer_groupe_final(nomgroupe:in Unbounded_String )is 
-		part:tParticipant_Festival;
+	procedure ajouter_Paris_gibus_nbgroupe is
 		j1,j2:tjour_festival;
 		ensJ:Based108_Data.Jour_Festival_List.Vector;
 		fest:tFestival;
@@ -720,15 +720,23 @@ package body p_application is
 
 		end ajoute_un;
 	begin
-		part.nom_groupe_inscrit:=nomGroupe;
-		to_ada_type("Paris_gibus",part.festival);
-		participant_festival_io.save(part);
 		to_ada_type("Paris_gibus",fest.ville_festival);
 		ensJ:=festival_io.Retrieve_Associated_Jour_Festivals(fest);
 		jour_festival_list.iterate (ensJ, compte_groupe'Access);
 		jour_festival_list.iterate (ensJ, ajoute_un'Access);
 		jour_festival_io.save(j1,true);
 		jour_festival_io.save(j2,true);
+	end ajouter_Paris_gibus_nbgroupe;
+
+	procedure enregistrer_groupe_final(nomgroupe:in Unbounded_String )is 
+		part:tParticipant_Festival;
+		
+		
+	begin
+		part.nom_groupe_inscrit:=nomGroupe;
+		to_ada_type("Paris_gibus",part.festival);
+		participant_festival_io.save(part,false);
+		
 	end enregistrer_groupe_final;
 	----
 	--retrouve les groupes pour un genre donné

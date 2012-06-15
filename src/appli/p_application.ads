@@ -91,6 +91,8 @@ package  p_application is
 	procedure retrouver_groupe_et_ville(groupes :out Groupe_List.vector);
 
 	procedure desinscrire_groupe(groupe:in out tgroupe);
+
+	procedure ajouter_Paris_gibus_nbgroupe;
 	
 	ExAucuneVille, ExAucunGroupe, ExVilleExiste, ExGroupeNonTrouve, ExGroupeExiste, ExAucunFinaliste, ExAucunFestival : exception;
 

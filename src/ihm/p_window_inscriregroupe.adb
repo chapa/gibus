@@ -35,9 +35,11 @@ package body P_Window_InscrireGroupe is
 		ville : based108_data.tVille;
 	begin
 		ville := ville_List.element(pos);
+		
 		append(modele_ville, rang_ville, Null_Iter); -- rajoute une ligne vide
 		-- et met dans la colonne 1 de cette ligne le nom de la ville
 		Set(modele_ville, rang_ville, 0, p_conversion.to_string(ville.nom_ville));
+		
 	end alimente_ville;
 
 	-- (ré)initialise la fenêtre avec la liste des villes dont le festival est programmé ou un message
